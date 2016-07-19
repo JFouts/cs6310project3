@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<Context crossContext="true" reloadable="true">
-	<Resource name="jdbc/ARMS" auth="Container"
-          type="javax.sql.DataSource" driverClassName="com.mysql.jdbc.Driver"
-          url="jdbc:mysql://localhost:3306/arms"
-          username="root" password="root" maxActive="20" maxIdle="10" maxWait="-1"/>
-</Context>
