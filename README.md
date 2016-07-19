@@ -24,4 +24,13 @@ Go to: localhost:8080/ARMSWebApp/LandingPage
 
 Updating Code
 	From Terminal
-	cd ~/workspace/ARMSWebApp
+	cd ~/Project3/cs6310project3
+	git pull
+
+Pushing Code
+	From Terminal
+	cd ~/Project3/cs6310project3
+	git add -A
+	git commit -a (follow the instructions to enter a comment)
+	git push
+	
