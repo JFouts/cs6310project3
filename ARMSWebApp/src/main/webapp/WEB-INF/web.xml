@@ -9,6 +9,7 @@
     xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
     id="ARMSWebApp"
     version="2.5">
+    
   <display-name>Archetype Created Web Application</display-name>
   
         <servlet>
@@ -18,6 +19,105 @@
         <servlet-mapping>
                 <servlet-name>LandingPage</servlet-name>
                 <url-pattern>/LandingPage</url-pattern>
+        </servlet-mapping>
+
+        <servlet>
+                <servlet-name>Course</servlet-name>
+                <servlet-class>arms.com.CourseServlet</servlet-class>
+        </servlet>
+        <servlet-mapping>
+                <servlet-name>Course</servlet-name>
+                <url-pattern>/Course</url-pattern>
+        </servlet-mapping>
+        
+        <servlet>
+                <servlet-name>AdminDashboard</servlet-name>
+                <servlet-class>arms.com.AdminDashboardServlet</servlet-class>
+        </servlet>
+        <servlet-mapping>
+                <servlet-name>AdminDashboard</servlet-name>
+                <url-pattern>/AdminDashboard</url-pattern>
+        </servlet-mapping>
+        
+        <servlet>
+                <servlet-name>AllRequestHistory</servlet-name>
+                <servlet-class>arms.com.AllRequestHistoryServlet</servlet-class>
+        </servlet>
+        <servlet-mapping>
+                <servlet-name>AllRequestHistory</servlet-name>
+                <url-pattern>/AllRequestHistory</url-pattern>
+        </servlet-mapping>
+        
+        <servlet>
+                <servlet-name>Catalog</servlet-name>
+                <servlet-class>arms.com.CatalogServlet</servlet-class>
+        </servlet>
+        <servlet-mapping>
+                <servlet-name>Catalog</servlet-name>
+                <url-pattern>/Catalog</url-pattern>
+        </servlet-mapping>
+        
+        <servlet>
+                <servlet-name>Constraints</servlet-name>
+                <servlet-class>arms.com.ConstraintsServlet</servlet-class>
+        </servlet>
+        <servlet-mapping>
+                <servlet-name>Constraints</servlet-name>
+                <url-pattern>/Constraints</url-pattern>
+        </servlet-mapping>
+        
+        <servlet>
+                <servlet-name>RegisterStudent</servlet-name>
+                <servlet-class>arms.com.RegisterStudentServlet</servlet-class>
+        </servlet>
+        <servlet-mapping>
+                <servlet-name>RegisterStudent</servlet-name>
+                <url-pattern>/RegisterStudent</url-pattern>
+        </servlet-mapping>
+                
+        <servlet>
+                <servlet-name>RequestHistory</servlet-name>
+                <servlet-class>arms.com.RequestHistoryServlet</servlet-class>
+        </servlet>
+        <servlet-mapping>
+                <servlet-name>RequestHistory</servlet-name>
+                <url-pattern>/RequestHistory</url-pattern>
+        </servlet-mapping>
+        
+        <servlet>
+                <servlet-name>Request</servlet-name>
+                <servlet-class>arms.com.RequestServlet</servlet-class>
+        </servlet>
+        <servlet-mapping>
+                <servlet-name>Request</servlet-name>
+                <url-pattern>/Request</url-pattern>
+        </servlet-mapping>
+        
+        <servlet>
+                <servlet-name>StudentDashboard</servlet-name>
+                <servlet-class>arms.com.StudentDashboardServlet</servlet-class>
+        </servlet>
+        <servlet-mapping>
+                <servlet-name>StudentDashboard</servlet-name>
+                <url-pattern>/StudentDashboard</url-pattern>
+        </servlet-mapping>
+        
+        <servlet>
+                <servlet-name>StudentSearch</servlet-name>
+                <servlet-class>arms.com.StudentSearchServlet</servlet-class>
+        </servlet>
+        <servlet-mapping>
+                <servlet-name>StudentSearch</servlet-name>
+                <url-pattern>/StudentSearch</url-pattern>
+        </servlet-mapping>
+        
+        <servlet>
+                <servlet-name>SummaryReport</servlet-name>
+                <servlet-class>arms.com.SummaryReportServlet</servlet-class>
+        </servlet>
+        <servlet-mapping>
+                <servlet-name>SummaryReport</servlet-name>
+                <url-pattern>/SummaryReport</url-pattern>
         </servlet-mapping>
         
         <resource-ref>
