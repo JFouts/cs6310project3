@@ -1,0 +1,19 @@
+h1 {
+	padding: 20px 0px;
+}
+
+.courseddgrp,.another,.delete {
+	display: inline-block;
+}
+
+.another {
+	margin-left: 20px;
+}
+
+.validation-error {
+	margin-top: 10px;
+}
+
+.schedule {
+	margin-top: 30px;
+}

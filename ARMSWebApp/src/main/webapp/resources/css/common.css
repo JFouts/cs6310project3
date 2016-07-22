@@ -1,0 +1,100 @@
+<style>
+body {
+	background: repeat;
+}
+
+.bannerHeader {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	right: 0px;
+	width: 100%;
+	height: 15%;
+	background-color: black;
+	z-index: -1;
+}
+
+.bannerHeaderGold {
+	position: absolute;
+	top: 15%;
+	left: 0px;
+	right: 0px;
+	width: 100%;
+	height: 5%;
+	background-color: #EEB211;
+}
+
+.bannerGrey {
+	position: absolute;
+	bottom: 5%;
+	left: 0px;
+	right: 0px;
+	width: 100%;
+	height: 5%;
+	background-color: grey;
+	z-index: -1;
+}
+
+.bannerGold {
+	position: absolute;
+	bottom: 0px;
+	left: 0px;
+	right: 0px;
+	width: 100%;
+	height: 5%;
+	background-color: #EEB211;
+	z-index: -1;
+}
+
+.sidebar {
+	position: absolute;
+	top: 20%;
+	left: 0px;
+	right: 0px;
+	width: 15%;
+	height: 70%;
+	background-color: black;
+}
+
+.sidebarElement {
+	position: relative;
+	top: 20%;
+	left: 0px;
+	right: 0px;
+	width: 100%;
+	height: 10%;
+	text-align:center;
+}
+
+.sidebarElement:hover {
+	background-color: #EEB211;
+}
+
+.displayPanel {
+	position: absolute;
+	top: 20%;
+	left: 15%;
+	right: 0px;
+	width: 80%;
+	height: 70%;
+	z-index: -1;
+}
+
+.greeting {
+	position: relative;
+	top: 15%;
+	left: 0px;
+	right: 0px;
+	width: 100%;
+	height: 5%;
+	padding: 0px 100px 0px 0px;
+}
+
+.page-content {
+	padding-top: 121px;
+}
+
+.logout {
+	margin-left: 10px;
+}
+</style>
