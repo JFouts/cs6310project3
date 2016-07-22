@@ -15,7 +15,7 @@ var courseList = ["6035 - Intro To Information Security",
                   "6601 - Artificial Intelligence",
                   "7637 - Knowledge-Based AI",
                   "7641 - Machine Learning",
-                  "7646 - Mach Learning For Trading"
+                  "7646 - Machine Learning For Trading"
                   ];
 
 function addCourseDropdown() {
@@ -44,8 +44,30 @@ function addCourseDropdown() {
 	
 }
 
+var schedule = [
+				{"course": "6035 - Intro To Information Security",
+				 "semester": 1},
+				{"course":"6250 - Computer Networks",
+				 "semester": 1},
+				{"course":"Database Systems Concepts & Design",
+				 "semester": 2}
+			   ]
+
 function displaySchedule() {
-	$(".schedule").html("<hr>Here's your system generated schedule!");
+	var schedhtml = "<h3>Generated Schedule</h3>";
+	schedhtml += '<table class="table table-striped">';
+	schedhtml += "  <tr>";
+	schedhtml += "    <th>Course</th>";
+	schedhtml += "    <th>Semester</th>";
+	schedhtml += "  </tr>";
+	$.each(schedule, function(i, item) {
+		schedhtml += "  <tr>";
+		schedhtml += "    <td>" + item.course + "</td>";
+		schedhtml += "    <td>" + item.semester + "</td>";
+		schedhtml += "  </tr>";    
+	});
+	schedhtml += "</table>";
+	$(".schedule").html("<hr>" + schedhtml);
 }
 
 function validScheduleRequest() {
@@ -73,7 +95,6 @@ function validScheduleRequest() {
 
 $("#submit").click(function() {
 	var valid = validScheduleRequest(); 
-	console.log(valid);
 	if (valid) {
 		$("#submit,.coursedd,.another,.delete").prop('disabled', true);
 		// get schedule
