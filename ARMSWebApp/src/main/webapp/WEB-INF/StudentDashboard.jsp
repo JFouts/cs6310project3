@@ -4,7 +4,22 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <html>
-  <body>
-	<h1>Student Dashboard Pending...</h1>
-  </body>
+
+<head>
+	<%@ include file="Header.jsp" %>
+</head>
+
+<body>
+    <%@ include file="Banner.jsp" %>
+    <div class="sidebar">
+        <div class=sidebarElement><a href="Catalog?userId=${userId}" style="color:#FFFFFF">View Catalog</a>
+        </div>
+        <div class=sidebarElement><a href="Request?userId=${userId}" style="color:#FFFFFF">Schedule A Request</a>
+        </div>
+        <div class=sidebarElement><a href="RequestHistory?userId=${userId}" style="color:#FFFFFF">View Request History</a>
+        </div>
+    </div>
+    <%@ include file="Footer.jsp" %>
+</body>
+
 </html>

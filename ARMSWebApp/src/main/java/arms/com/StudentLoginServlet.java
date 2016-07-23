@@ -7,11 +7,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class StudentLoginServlet extends HttpServlet {
+public class StudentLoginServlet extends ARMSServlet {
     private static final long serialVersionUID = 1L;
     
     protected void doGet(HttpServletRequest request,
             HttpServletResponse response) throws ServletException, IOException {
+    	
+    	super.doGet(request, response);
     	
     	request.setAttribute("loginFailed", false);
 		request.getRequestDispatcher("WEB-INF/StudentLogin.jsp").forward(request, response);
@@ -19,7 +21,7 @@ public class StudentLoginServlet extends HttpServlet {
     
     protected void doPost(HttpServletRequest request,
             HttpServletResponse response) throws ServletException, IOException {
-    	
+
     	int userId = Integer.parseInt(request.getParameter("userId"));
     	
     	// TODO: Validate user id in the DB

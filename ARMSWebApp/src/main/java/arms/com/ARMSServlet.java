@@ -14,7 +14,7 @@ public class ARMSServlet extends HttpServlet {
             HttpServletResponse response) throws ServletException, IOException {
     	
     	String userIdString = request.getParameter("userId");
-    	if(!"".equals(userIdString))
+    	if(userIdString != null && !"".equals(userIdString))
     	{
     		request.setAttribute("isLoggedIn", true);
     		int userId = Integer.parseInt(userIdString);
