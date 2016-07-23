@@ -7,6 +7,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import arms.db.ARMDatabase;
+import arms.db.Course;
+
 /**
  * CourseServlet is the controller for the Course page.
  * This page has two functions
@@ -94,14 +97,18 @@ public class CourseServlet extends HttpServlet {
     	
     	// TODO: Read this data from the DB
     	
-    	request.setAttribute("courseId", courseId);
-    	request.setAttribute("courseName", "Sample Course");
-    	request.setAttribute("courseAvail", new String[] { "Fall", "Spring", "Summer" });
-    	request.setAttribute("coursePrereq", new String[] { "Advanced Opperating Systems", "Computational Photography" });
-    	request.setAttribute("courseSize", -1);
+    	Course course = null;
+    	
+    	ARMDatabase api = ARMDatabase.getInstance();
+    	try {
+			course = api.getCourseDetails(courseId);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+    	request.setAttribute("course", course);
     	request.setAttribute("userId", userId);
     	request.setAttribute("isAdmin", isAdmin);
-    	
     	request.setAttribute("courseList", courseList);
     	
 		request.getRequestDispatcher("WEB-INF/Course.jsp").forward(request, response);
@@ -114,13 +121,23 @@ public class CourseServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request,
     		HttpServletResponse response) throws ServletException, IOException {
     	
+    	Course course = new Course();
     	int courseId = Integer.parseInt(request.getParameter("courseId"));
-    	String[] allowedSemestersString = request.getParameter("courseAvail").split(",");
+    	int sizeLimit = Integer.parseInt(request.getParameter("maxsize"));
+    	course.setId(courseId);
+    	course.setMaxSize(sizeLimit);
+    	
+    	ARMDatabase api = ARMDatabase.getInstance();
+    	api.updateCourse(course);
+    	
+    	this.doGet(request, response);
+    	
+    	/*String[] allowedSemestersString = request.getParameter("courseAvail").split(",");
     	int[] allowedSemesters = new int[allowedSemestersString.length];
     	for(int i=0;i<allowedSemesters.length;i++) {
     		allowedSemesters[i] = Integer.parseInt(allowedSemestersString[i]); 		
-    	}
-    	int sizeLimit = Integer.parseInt(request.getParameter("courseSize"));
+    	}*/
+    	
     	
     	// TODO: Store this data into the DB
     }

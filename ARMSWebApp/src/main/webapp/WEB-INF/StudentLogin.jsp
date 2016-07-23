@@ -11,7 +11,7 @@
     <title>Georgia Tech :: Academic Resource Management System</title>
     <link type="text/css" rel="stylesheet" href="/ARMSWebApp/resources/css/bootstrap.min.css" />
     <link type="text/css" rel="stylesheet" href="/ARMSWebApp/resources/css/common.css" />
-    <link type="text/css" rel="stylesheet" href="/ARMSWebApp/resources/css/schedulerequest.css" />
+    <link type="text/css" rel="stylesheet" href="/ARMSWebApp/resources/css/login.css" />
     <link rel="shortcut icon" type="image/x-icon" href="/ARMSWebApp/resources/images/favicon.png" />
 </head>
 
@@ -20,26 +20,20 @@
         <img src="/ARMSWebApp/resources/images/GT_image.png" alt="GT Header Image" height="100" width="200" />
         <img src="/ARMSWebApp/resources/images/ARMS_header.png" alt="ARMS Header Image" height="100" width="600" align="right" />
     </div>
-    <div class="bannerHeaderGold">
-        <div class="greeting" align="right">
-            <span>Welcome, Student ${userId}!</span>
-            <a class="logout" href="slogin.html" style="color:#FFFFFF">Logout</a>
-        </div>
-    </div>
+    <div class="bannerHeaderGold"></div>
+    
     <div class="page-content">
-        <div class="container">
-            <h1 class="text-center">New Schedule Request</h1>
-            <p>Select the courses you wish to schedule, adding as many courses as necessary.</p>
-            <div id="scheduleRequestForm">
-                <div id="srf-dropdowns"></div>
-                <button type="submit" id="submit" class="btn btn-default">Submit Schedule Request</button>
+        <form class="form-inline text-center loginform" action="/ARMSWebApp/StudentLogin" method="POST">
+            <div class="form-group">
+                <label class="sr-only" for="studentid">Student ID</label>
+                <c:if test="${loginFailed}">
+                	<p>Log In Failed...</p>
+                </c:if>
+                <input type="text" class="form-control" id="adminid" name="userId" placeholder="Student ID">
             </div>
-            <div class="validation-error"></div>
-            <div class="schedule"></div>
-            <div class="text-center">
-                <a class="btn btn-default" href="StudentDashboard?userId=${userId}" role="button">Cancel / Back to Dashboard</a>
-            </div>
-        </div>
+            <button type="submit" class="btn btn-default">Log in</button>
+            <h4><small>Enter your student ID to login.</small></h4>
+        </form>
     </div>
     <div class="displayPanel"></div>
     <div class="footer">
@@ -48,7 +42,6 @@
     </div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="/ARMSWebApp/resources/js/bootstrap.min.js"></script>
-    <script src="/ARMSWebApp/resources/js/schedulerequest.js"></script>
 </body>
 
 </html>
