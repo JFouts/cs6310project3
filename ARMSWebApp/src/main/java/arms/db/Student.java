@@ -1,5 +1,7 @@
 package arms.db;
 
+
+
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -11,6 +13,7 @@ public class Student {
 	
 	public Student(){
 		try{
+			db = ARMDatabase.getDatabase();
 			this.studentId = db.addStudent(this);
 		} catch (Exception e){
 			e.printStackTrace();
@@ -22,11 +25,8 @@ public class Student {
 		this.takenHours = hours;
 	}
 	
-	public static void setDatabase(ARMDatabase database){
-		db = database;
-	}
-	
 	public static Student get(int id) throws Exception{
+		db = ARMDatabase.getDatabase();
 		return db.getStudent(id);
 	}
 	
@@ -38,11 +38,12 @@ public class Student {
 		return db.getCatalog();
 	}
 	
-	public Map<String, String> viewCourse(int id) throws Exception{
-		Map<String, String> courseDetails = db.getCourseDetails(id);
+	public Course viewCourse(int id) throws Exception{
+		Course c = db.getCourse(id);
 		int demand = db.getCourseDemand(id);
-		courseDetails.put("demand", String.valueOf(demand));
-		return courseDetails;
+		//courseDetails.put("demand", String.valueOf(demand));
+		c.setDemand(demand);
+		return c;
 	}
 	
 	public void scheduleRequest(ArrayList<Integer> courses) throws Exception{
@@ -81,6 +82,10 @@ public class Student {
 		} while(newCourses.size() != courses.size());
 		
 		return courses;
+	}
+	
+	public ArrayList<Integer> getRequestedCourses() throws Exception{
+		return db.getRequestedCourses(studentId);
 	}
 
 }

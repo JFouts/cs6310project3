@@ -7,8 +7,8 @@ import java.util.Map;
 public class Administrator {
 	private static ARMDatabase db;
 	
-	public static void setDatabase(ARMDatabase database){
-		db = database;
+	public Administrator(){
+		db = ARMDatabase.getDatabase();
 	}
 	
 	public Student registerStudent(){
@@ -23,11 +23,12 @@ public class Administrator {
 		return db.getCatalog();
 	}
 	
-	public Map<String, String> viewCourse(int id) throws Exception{
-		Map<String, String> courseDetails = db.getCourseDetails(id);
+	public Course viewCourse(int id) throws Exception{
+		Course c = db.getCourse(id);
 		int demand = db.getCourseDemand(id);
-		courseDetails.put("demand", String.valueOf(demand));
-		return courseDetails;
+		//courseDetails.put("demand", String.valueOf(demand));
+		c.setDemand(demand);
+		return c;
 	}
 	
 	public void shadowRequest(ArrayList<Integer> courses, int studentId) throws Exception{

@@ -19,7 +19,21 @@ public class ARMDatabase {
     Connection conn = null;
     Statement stmt = null;
     
-    public void setup() throws Exception {
+    private static ARMDatabase instance;
+    
+    private ARMDatabase(){
+    	setup();
+    }
+    
+    public static ARMDatabase getDatabase(){
+    	if(instance == null){
+    		instance = new ARMDatabase();
+    	}
+    	return instance;
+    }
+    
+    
+    public void setup() {
     	//STEP 2: Register JDBC driver
     	try {
     		Class.forName("com.mysql.jdbc.Driver");
@@ -157,6 +171,61 @@ public class ARMDatabase {
     	}
     }
     
+    public Course getCourse(int courseId) throws Exception{
+    	try{
+    		String sql = "SELECT c.course_id, c.name, c.max_size, " +
+    						"GROUP_CONCAT(DISTINCT a.semester) " +
+    							"AS semesters, " +
+    						"GROUP_CONCAT(DISTINCT p.prereq_id) " +
+    							"AS prerequisites " +
+    					  "FROM course AS `c` " +
+    					  "LEFT OUTER JOIN course_prereq AS `p` " +
+    					  	"ON (c.course_id = p.course_id) " +
+    					  "INNER JOIN course_availability AS `a` " +
+    					  	"ON (c.course_id = a.course_id)" +
+    					  "WHERE c.course_id = ? " +
+    					  "GROUP BY c.course_id;";
+			PreparedStatement statement = conn.prepareStatement(sql);
+
+			statement.setInt(1, courseId);
+			ResultSet rs = statement.executeQuery();
+			
+		  String name = "", semesters= "", prereqs = "";	
+  	      int maxSize = -1;
+  	      
+		  while(rs.next()){
+  	         //Retrieve by column name
+  	         //String id  = String.valueOf(rs.getInt("course_id"));
+  	         name = rs.getString("name");
+  	         maxSize = rs.getInt("max_size");
+  	         semesters = rs.getString("semesters");
+  	         prereqs = rs.getString("prerequisites");
+		  }
+		  if(maxSize == 0)
+			  maxSize = -1;
+		  Course c = new Course(courseId, name, maxSize);
+		  
+		  // availability never null
+		  String[] availability = semesters.split(",");
+		  for(int i=0; i<availability.length; i++){
+			  c.addAvailability(Integer.parseInt(availability[i]));
+		  }
+		  
+		  // prereq sometimes null
+		  if(prereqs != null){
+			  String[] prerequisites = prereqs.split(",");
+			  for(int i=0; i<prerequisites.length; i++){
+				  c.addPrereqs(Integer.parseInt(prerequisites[i]));
+			  }
+		  }
+		  
+		  return c;
+		  
+    	} catch (SQLException e){
+    		throw new Exception(e);
+    	}  		
+    }
+    
     public Map<String, String> getCourseDetails(int courseId) throws Exception{
     	try{
     		String sql = "SELECT c.course_id, c.name, c.max_size, " +
@@ -227,30 +296,6 @@ public class ARMDatabase {
     	}	
     }
     
-    /*public ArrayList<Integer> getTakenCourses(int studentId) throws Exception{
-    	try{
-    		String sql = "SELECT course_id " +
-    					 "FROM student_taken_course  " +
-    					 "WHERE student_id = ?;"; 
-    		PreparedStatement statement = conn.prepareStatement(sql);
-
-			statement.setInt(1, studentId);
-			ResultSet rs = statement.executeQuery();
-			
-			ArrayList<Integer> taken = new ArrayList<Integer>();
-			while(rs.next()){
-   	         //Retrieve by column name
-   	         	int course = rs.getInt("course_id");
-   	         	taken.add(course);
-			}
-			rs.close();
-  	      
-  	      return taken;
-    	} catch (SQLException e){
-    		throw new Exception(e);
-    	}	
-    }*/
-    
     public ArrayList<Integer> getPrereqsNotTaken(int courseId, int studentId) throws Exception{
     	try{
     		String sql = "SELECT prereq_id FROM course_prereq " +
@@ -320,6 +365,158 @@ public class ARMDatabase {
     		throw new Exception(e);
     	}
     }
-
     
+    
+    /*******************GUROBI METHODS************************/
+	
+	public int getStudentCount() throws Exception{
+		try{
+    		stmt = conn.createStatement();
+    		String sql = "SELECT COUNT(student_id) AS num_students FROM student;";
+    	    ResultSet rs = stmt.executeQuery(sql);
+    	    
+    	    int numStudents = -1;
+    	    
+    	      while(rs.next()){
+    	         //Retrieve by column name
+    	    	  numStudents = rs.getInt("num_students");
+    	      }
+    	      
+    	      rs.close();
+    	      return numStudents;
+		} catch (SQLException e){
+    		throw new Exception(e);
+    	}
+	}
+	
+	public int getCourseCount() throws Exception{
+		try{
+    		stmt = conn.createStatement();
+    		String sql = "SELECT COUNT(course_id) AS num_courses FROM course;";
+    	    ResultSet rs = stmt.executeQuery(sql);
+    	    
+    	    int numCourses = -1;
+    	    
+    	      while(rs.next()){
+    	         //Retrieve by column name
+    	    	  numCourses = rs.getInt("num_courses");
+    	      }
+    	      
+    	      rs.close();
+    	      return numCourses;
+		} catch (SQLException e){
+    		throw new Exception(e);
+    	}
+	}
+	
+	public int getNumSemesters() throws Exception{
+		try{
+    		stmt = conn.createStatement();
+    		String sql = "SELECT max_semesters FROM global_constraint;";
+    	    ResultSet rs = stmt.executeQuery(sql);
+    	    
+    	    int numSemesters = -1;
+    	    
+    	      while(rs.next()){
+    	         //Retrieve by column name
+    	    	  numSemesters = rs.getInt("max_semesters");
+    	      }
+    	      
+    	      rs.close();
+    	      return numSemesters;
+		} catch (SQLException e){
+    		throw new Exception(e);
+    	}
+	}
+	
+	public int getMaxCoursesPerSemester() throws Exception {
+		try{
+    		stmt = conn.createStatement();
+    		String sql = "SELECT max_classes FROM global_constraint;";
+    	    ResultSet rs = stmt.executeQuery(sql);
+    	    
+    	    int maxClasses = -1;
+    	    
+    	      while(rs.next()){
+    	         //Retrieve by column name
+    	    	  maxClasses = rs.getInt("max_classes");
+    	      }
+    	      
+    	      rs.close();
+    	      return maxClasses;
+		} catch (SQLException e){
+    		throw new Exception(e);
+    	}
+	}
+
+	public int getMaxStudentsPerCourse() throws Exception {
+		try{
+    		stmt = conn.createStatement();
+    		String sql = "SELECT max_students FROM global_constraint;";
+    	    ResultSet rs = stmt.executeQuery(sql);
+    	    
+    	    int maxStudents = -1;
+    	    
+    	      while(rs.next()){
+    	         //Retrieve by column name
+    	    	  maxStudents = rs.getInt("max_students");
+    	      }
+    	      
+    	      rs.close();
+    	      return maxStudents;
+		} catch (SQLException e){
+    		throw new Exception(e);
+    	}
+	}
+	
+	public ArrayList<Integer> getRequestedCourses(int studentId) throws Exception{
+		try{
+			String sql = "SELECT course_id " +
+					"FROM request_course AS `r` "+
+					"INNER JOIN student_request AS `s` ON (s.request_id = r.request_id) " +
+					"WHERE s.student_id = ? AND " +
+						"request_id = (SELECT MAX(request_id) " +
+										"FROM student_request " +
+										"WHERE student_id = ?);";
+	    	PreparedStatement statement = conn.prepareStatement(sql);
+
+			statement.setInt(1, studentId);
+			statement.setInt(2, studentId);
+			ResultSet rs = statement.executeQuery();
+		
+			ArrayList<Integer> requestedCourses = new ArrayList<Integer>();
+			while(rs.next()){
+	         //Retrieve by column name
+	    	  requestedCourses.add(rs.getInt("course_id"));
+	    	}
+			rs.close();
+			
+			return requestedCourses;
+		} catch (SQLException e){
+    		throw new Exception(e);
+    	}
+	}
+	
+	public ArrayList<Integer> getPrereqs(int courseId) throws Exception{
+		try{
+			String sql = "SELECT prereq_id " +
+					"FROM course_prereq "+
+					"WHERE course_id = ?);";
+	    	PreparedStatement statement = conn.prepareStatement(sql);
+
+			statement.setInt(1, courseId);
+			ResultSet rs = statement.executeQuery();
+			
+			ArrayList<Integer> prereqs = new ArrayList<Integer>();
+			while(rs.next()){
+	         //Retrieve by column name
+	    	  prereqs.add(rs.getInt("course_id"));
+	    	}
+			rs.close();
+			
+			return prereqs;
+		}catch (SQLException e){
+    		throw new Exception(e);
+    	}
+	}
 }
