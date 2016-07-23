@@ -22,5 +22,6 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="/opt/gurobi650/linux64/lib/gurobi.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

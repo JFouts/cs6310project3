@@ -7,6 +7,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import arms.db.ARMDatabase;
+import arms.db.Course;
+
 /**
  * CourseServlet is the controller for the Course page.
  * This page has two functions
@@ -19,7 +22,7 @@ import javax.servlet.http.HttpServletResponse;
  * This page primarily involves the usage of the Course object.
  * */
 
-public class CourseServlet extends HttpServlet {
+public class CourseServlet extends ARMSServlet {
     private static final long serialVersionUID = 1L;
     
     //TODO: This class is only temporary until we can pass Course objects around
@@ -57,16 +60,9 @@ public class CourseServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request,
             HttpServletResponse response) throws ServletException, IOException {
     	
+    	super.doGet(request, response);
+    	
     	int courseId = Integer.parseInt(request.getParameter("courseId"));
-    	int userId = Integer.parseInt(request.getParameter("userId"));
-    	boolean isAdmin = false;
-    	
-    	
-    	// TODO: Check User Id in DB
-    	
-    	if(userId == 2) {
-    		isAdmin = true;
-    	}
     	
     	// TODO: Read full course list from DB
     	// TODO: The CourseId class is only needed until the Course class is completed
@@ -94,14 +90,19 @@ public class CourseServlet extends HttpServlet {
     	
     	// TODO: Read this data from the DB
     	
-    	request.setAttribute("courseId", courseId);
-    	request.setAttribute("courseName", "Sample Course");
-    	request.setAttribute("courseAvail", new String[] { "Fall", "Spring", "Summer" });
-    	request.setAttribute("coursePrereq", new String[] { "Advanced Opperating Systems", "Computational Photography" });
-    	request.setAttribute("courseSize", -1);
-    	request.setAttribute("userId", userId);
-    	request.setAttribute("isAdmin", isAdmin);
+    	Course course = null;
     	
+    	ARMDatabase api = ARMDatabase.getDatabase();
+    	try {
+			course = api.getCourse(courseId);
+		} catch (Exception e) {
+			request.setAttribute("error", e.toString());
+			e.printStackTrace();
+			request.getRequestDispatcher("WEB-INF/Error.jsp").forward(request, response);
+			return;
+		}
+
+    	request.setAttribute("course", course);
     	request.setAttribute("courseList", courseList);
     	
 		request.getRequestDispatcher("WEB-INF/Course.jsp").forward(request, response);
@@ -113,15 +114,16 @@ public class CourseServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request,
     		HttpServletResponse response) throws ServletException, IOException {
-    	
+
     	int courseId = Integer.parseInt(request.getParameter("courseId"));
-    	String[] allowedSemestersString = request.getParameter("courseAvail").split(",");
-    	int[] allowedSemesters = new int[allowedSemestersString.length];
-    	for(int i=0;i<allowedSemesters.length;i++) {
-    		allowedSemesters[i] = Integer.parseInt(allowedSemestersString[i]); 		
-    	}
-    	int sizeLimit = Integer.parseInt(request.getParameter("courseSize"));
+    	int sizeLimit = Integer.parseInt(request.getParameter("maxsize"));
+    	String courseName = request.getParameter("courseName");
     	
-    	// TODO: Store this data into the DB
+    	Course course = new Course(courseId, courseName, sizeLimit);
+    	
+    	ARMDatabase api = ARMDatabase.getDatabase();
+    	api.updateCourse(course);
+    	
+    	this.doGet(request, response);
     }
 }

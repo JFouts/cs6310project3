@@ -269,6 +269,24 @@ public class ARMDatabase {
     	}
     }
     
+    public void updateCourse(Course course) {
+    	try{
+    		String sql = "UPDATE course SET name = ?, max_size = ? WHERE id = ?;";
+			PreparedStatement statement = conn.prepareStatement(sql);
+
+			statement.setInt(1, course.getId());
+			statement.setString(2, course.getName());
+			statement.setInt(3, course.getMaxSize());
+			
+			statement.executeUpdate();
+			
+			//TODO: Store Semesters and Prereqs
+			
+    	} catch (SQLException e){
+    		e.printStackTrace();
+    	}  		
+    }
+    
     public int getCourseDemand(int courseId) throws Exception{
     	try{
     		String sql = "SELECT COUNT(course_id) AS demand " +

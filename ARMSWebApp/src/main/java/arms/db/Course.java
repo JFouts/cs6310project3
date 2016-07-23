@@ -35,5 +35,49 @@ public class Course {
 	public void setDemand(int d){
 		demand = d;
 	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public ArrayList<Integer> getPrereqs() {
+		return prereqs;
+	}
+
+	public void setPrereqs(ArrayList<Integer> prereqs) {
+		this.prereqs = prereqs;
+	}
+
+	public ArrayList<Integer> getAvailability() {
+		return availability;
+	}
+
+	public void setAvailability(ArrayList<Integer> availability) {
+		this.availability = availability;
+	}
+
+	public int getMaxSize() {
+		return maxSize;
+	}
+
+	public void setMaxSize(int maxSize) {
+		this.maxSize = maxSize;
+	}
+
+	public int getDemand() {
+		return demand;
+	}
 	
 }
