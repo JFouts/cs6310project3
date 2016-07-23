@@ -4,7 +4,37 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <html>
-  <body>
-	<h1>Catalog Pending...</h1>
-  </body>
+
+<head>
+	<%@ include file="Header.jsp" %>
+</head>
+
+<body>
+    <%@ include file="Banner.jsp" %>
+    <div class="page-content">
+        <h1 class="text-center">Course Catalog</h1>
+        <div class="container">
+            <table class="table table-striped">
+                <tr>
+                    <th>Course ID</th>
+                    <th>Course Name</th>
+                </tr>
+                
+                <c:forEach var="course" items="${courseList}">
+	                <tr>
+	                    <td><a href="Course?userId=${userId}&courseId=${course.id}">${course.id}</a>
+	                    </td>
+	                    <td><a href="Course?userId=${userId}&courseId=${course.id}">${course.name}</a>
+	                    </td>
+	                </tr>	
+                </c:forEach>
+            </table>
+            <div class="text-center">
+                <a class="btn btn-default" href="sdashboard.html" role="button">Back to Dashboard</a>
+            </div>
+        </div>
+    </div>
+    <%@ include file="Footer.jsp" %>
+</body>
+
 </html>

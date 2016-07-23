@@ -9,14 +9,13 @@ import javax.servlet.http.HttpServletResponse;
 
 import arms.com.CourseServlet.CourseId;
 
-public class CatalogServlet extends HttpServlet {
+public class CatalogServlet extends ARMSServlet {
     private static final long serialVersionUID = 1L;
     
     protected void doGet(HttpServletRequest request,
             HttpServletResponse response) throws ServletException, IOException {
 
-    	int userId = Integer.parseInt(request.getParameter("userId"));
-    	request.setAttribute("userId", userId);
+    	super.doGet(request, response);
     	
     	// TODO: Read full course list from DB
     	// TODO: The CourseId class is only needed until the Course class is completed
