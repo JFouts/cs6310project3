@@ -8,16 +8,16 @@
     <img src="/ARMSWebApp/resources/images/ARMS_header.png" alt="ARMS Header Image" height="100" width="600" align="right" />
 </div>
 <div class="bannerHeaderGold">
-<c:if test="isLoggedIn">
+<c:if test="${isLoggedIn}">
 	<div class="greeting" align="right">
 	<c:choose>
-	<c:when test="isAdmin">
+	<c:when test="${isAdmin}">
     	<span>Welcome, Administrator ${userId}!</span>
-    	<a class="logout" href="AdminLogin.html" style="color:#FFFFFF">Logout</a>
+    	<a class="logout" href="AdminLogin" style="color:#FFFFFF">Logout</a>
    	</c:when>
    	<c:otherwise>
    		<span>Welcome, Student ${userId}!</span>
-   		<a class="logout" href="StudentLogin.html" style="color:#FFFFFF">Logout</a>
+   		<a class="logout" href="StudentLogin" style="color:#FFFFFF">Logout</a>
    	</c:otherwise>
    	</c:choose>
   </div>
