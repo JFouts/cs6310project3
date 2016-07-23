@@ -25,6 +25,13 @@
 		<artifactId>jstl</artifactId>
 		<version>1.2</version>
 	</dependency>
+	<dependency>
+		<groupId>gurobi</groupId>
+		<artifactId>gurobi</artifactId>
+		<version>6.5.0</version>
+		<scope>system</scope>
+		<systemPath>/opt/gurobi650/linux64/lib/gurobi.jar</systemPath>
+	</dependency>
   </dependencies>
   <build>
     <finalName>ARMSWebApp</finalName>
