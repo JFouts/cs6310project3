@@ -13,9 +13,6 @@ public class StudentDashboardServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request,
             HttpServletResponse response) throws ServletException, IOException {
     	
-    	int userId = Integer.parseInt(request.getParameter("userId"));
-    	request.setAttribute("userId", userId);
-    	
 		request.getRequestDispatcher("WEB-INF/StudentDashboard.jsp").forward(request, response);
     }
 }

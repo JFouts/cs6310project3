@@ -120,24 +120,6 @@
                 <url-pattern>/SummaryReport</url-pattern>
         </servlet-mapping>
         
-        <servlet>
-                <servlet-name>StudentLogin</servlet-name>
-                <servlet-class>arms.com.StudentLoginServlet</servlet-class>
-        </servlet>
-        <servlet-mapping>
-                <servlet-name>StudentLogin</servlet-name>
-                <url-pattern>/StudentLogin</url-pattern>
-        </servlet-mapping>
-        
-        <servlet>
-                <servlet-name>AdminLogin</servlet-name>
-                <servlet-class>arms.com.AdminLoginServlet</servlet-class>
-        </servlet>
-        <servlet-mapping>
-                <servlet-name>AdminLogin</servlet-name>
-                <url-pattern>/AdminLogin</url-pattern>
-        </servlet-mapping>
-        
         <resource-ref>
     		  <description>DB Connection</description>
      	      <res-ref-name>jdbc/ARMS</res-ref-name>

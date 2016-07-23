@@ -13,9 +13,6 @@ public class RequestServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request,
             HttpServletResponse response) throws ServletException, IOException {
     	
-    	int userId = Integer.parseInt(request.getParameter("userId"));
-    	request.setAttribute("userId", userId);
-    	
 		request.getRequestDispatcher("WEB-INF/Request.jsp").forward(request, response);
     }
 }

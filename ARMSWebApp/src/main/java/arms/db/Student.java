@@ -38,12 +38,12 @@ public class Student {
 		return db.getCatalog();
 	}
 	
-	/*public Map<String, String> viewCourse(int id) throws Exception{
+	public Map<String, String> viewCourse(int id) throws Exception{
 		Map<String, String> courseDetails = db.getCourseDetails(id);
 		int demand = db.getCourseDemand(id);
 		courseDetails.put("demand", String.valueOf(demand));
 		return courseDetails;
-	}*/
+	}
 	
 	public void scheduleRequest(ArrayList<Integer> courses) throws Exception{
 		

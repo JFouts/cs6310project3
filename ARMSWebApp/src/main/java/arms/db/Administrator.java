@@ -23,12 +23,12 @@ public class Administrator {
 		return db.getCatalog();
 	}
 	
-	/*public Map<String, String> viewCourse(int id) throws Exception{
+	public Map<String, String> viewCourse(int id) throws Exception{
 		Map<String, String> courseDetails = db.getCourseDetails(id);
 		int demand = db.getCourseDemand(id);
 		courseDetails.put("demand", String.valueOf(demand));
 		return courseDetails;
-	}*/
+	}
 	
 	public void shadowRequest(ArrayList<Integer> courses, int studentId) throws Exception{
 		

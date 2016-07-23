@@ -9,7 +9,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class ARMDatabase {
@@ -19,25 +18,6 @@ public class ARMDatabase {
     
     Connection conn = null;
     Statement stmt = null;
-    
-    // Following the Singleton design pattern to create one instance of this service class
-    private static ARMDatabase instance;
-    
-    private ARMDatabase() {
-    	try{
-    		setup();
-    	} catch(Exception e) {
-    		e.printStackTrace();
-    	}
-    }
-    
-    public static ARMDatabase getInstance() {
-    	if(instance == null) {
-    		instance = new ARMDatabase();
-    	}
-    	
-    	return instance;
-    }
     
     public void setup() throws Exception {
     	//STEP 2: Register JDBC driver
@@ -177,7 +157,7 @@ public class ARMDatabase {
     	}
     }
     
-    public Course getCourseDetails(int courseId) throws Exception{
+    public Map<String, String> getCourseDetails(int courseId) throws Exception{
     	try{
     		String sql = "SELECT c.course_id, c.name, c.max_size, " +
     						"GROUP_CONCAT(DISTINCT a.semester) " +
@@ -196,25 +176,25 @@ public class ARMDatabase {
 			statement.setInt(1, courseId);
 			ResultSet rs = statement.executeQuery();
     	    
-	    	Course course = new Course();
-    	    if(rs.next()){
+    	    Map<String, String> details = new HashMap<String,String>();
+    	    
+    	      while(rs.next()){
     	         //Retrieve by column name
-    	         int id  = rs.getInt("course_id");
+    	         String id  = String.valueOf(rs.getInt("course_id"));
     	         String name = rs.getString("name");
-    	         int maxSize = rs.getInt("max_size");
+    	         String maxSize = String.valueOf(rs.getInt("max_size"));
     	         String semesters = rs.getString("semesters");
     	         String prereqs = rs.getString("prerequisites");
     	         
-    	         course.setId(id);
-    	         course.setName(name);
-    	         course.setMaxSize(maxSize);
-    	             	         
-    	         //details.put("semesters", semesters);
-    	         //details.put("prereqs", prereqs);
-    	    }
-    	    rs.close();
+    	         details.put("course_id", id);
+    	         details.put("name", name);
+    	         details.put("max_size", maxSize);
+    	         details.put("semesters", semesters);
+    	         details.put("prereqs", prereqs);
+    	      }
+    	      rs.close();
     	      
-    	    return course;
+    	      return details;
     	} catch (SQLException e){
     		throw new Exception(e);
     	}
@@ -341,18 +321,5 @@ public class ARMDatabase {
     	}
     }
 
-    public void updateCourse(Course course){
-    	try{
-    		String sql = "UPDATE course SET max_size = ? WHERE course_id = ?;";
-			PreparedStatement statement = conn.prepareStatement(sql);
-
-			statement.setInt(1, course.getMaxSize());
-			statement.setInt(2, course.getId());
-			statement.executeUpdate();
-			
-    	} catch (SQLException e){
-    		e.printStackTrace();
-    	}
-    }
     
 }
