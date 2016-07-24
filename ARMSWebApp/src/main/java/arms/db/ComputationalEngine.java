@@ -124,9 +124,40 @@ public class ComputationalEngine {
 		}
 	}
 	
-	//public void studentPriorityConstraint() throws Exception{
+	/*public void studentPriorityConstraint() throws Exception{
+		ArrayList<Integer> studentsInOrder = db.getStudentRequestPriority();
+		if(shadowMode){
+			if(studentsInOrder.contains(requestingStudentId)){
+				studentsInOrder.remove(requestingStudentId);
+			}
+			studentsInOrder.add(requestingStudentId);
+		}
 		
-	//}
+		for(int i=0; i< studentsInOrder.size()-1; i++){
+			Student s = db.getStudent(studentsInOrder.get(i));
+			ArrayList<Integer> reqCourses = s.getRequestedCourses();
+			if(s.getStudentId() == requestingStudentId && shadowMode)
+				reqCourses = shadowRequest;
+			for(int j=0; j<numCourses; j++){
+				//Course c = db.getCourse(j+1);
+				if(reqCourses.contains(j+1)){
+					for(int iSub = i+1; iSub < studentsInOrder.size(); iSub++){
+						GRBLinExpr priorityStudentConstraint = new GRBLinExpr();
+						GRBLinExpr nonPriorityStudentExpr = new GRBLinExpr();
+						int priorityStudId = s.getStudentId()-902448900;
+						int nonPriorStudId = studentsInOrder.get(iSub)-902448900;
+						for(int k=0; k<numSemesters;k++){
+							priorityStudentConstraint.addTerm(k+1, Yijk[priorityStudId][j][k]);
+							nonPriorityStudentExpr.addTerm(k+1, Yijk[nonPriorStudId][j][k]);
+						}
+						String cname = "REQPRIORITY_Student"+priorityStudId+"_Course"+j+"_NonPriorityStudent"+nonPriorStudId;
+						model.addConstr(priorityStudentConstraint, GRB.GREATER_EQUAL,nonPriorityStudentExpr, cname);
+					}
+				}
+			}
+		}
+		
+	}*/
 	
 	public void maxCourseConstraint() throws Exception{
 		int maxCourses = db.getMaxCoursesPerSemester();
