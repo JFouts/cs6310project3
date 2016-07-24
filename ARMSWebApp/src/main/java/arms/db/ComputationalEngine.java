@@ -185,10 +185,10 @@ public class ComputationalEngine {
 			for(int i=0; i<numStudents; i++){
 				Student s = Student.get(i+902448900);
 				for(int j=0; j<numCourses; j++){
-					Course c = db.getCourse(j+1);
+					//Course c = db.getCourse(j+1);
 						// only add prereq constraints if student taking class
 						// and prereq exists
-						ArrayList reqCourses = s.getRequestedCourses();
+						ArrayList<Integer> reqCourses = s.getRequestedCourses();
 						if(s.getStudentId() == requestingStudentId && shadowMode)
 							reqCourses = shadowRequest;
 						if(reqCourses.contains(j+1)){
@@ -199,10 +199,10 @@ public class ComputationalEngine {
 									GRBLinExpr rightCourseExpr = new GRBLinExpr();
 									int prereqIndex = prereqs.get(preJ)-1;
 									for(int k=0; k<numSemesters;k++){
-										leftPrereqConstraint.addTerm(k+1, Yijk[i][prereqIndex][k]);
+										leftPrereqConstraint.addTerm(k+2, Yijk[i][prereqIndex][k]);
 										rightCourseExpr.addTerm(k+1, Yijk[i][j][k]);
 									}
-									leftPrereqConstraint.addConstant(1);
+									//leftPrereqConstraint.addConstant(1);
 									String cname = "PREREQ_Student"+i+"_Course"+j+"_Prereq"+prereqIndex;
 									model.addConstr(leftPrereqConstraint, GRB.LESS_EQUAL,rightCourseExpr, cname);
 								}
@@ -221,10 +221,10 @@ public class ComputationalEngine {
 			for(int i=0; i<numStudents; i++){
 				Student s = Student.get(i+902448900);
 				for(int j=0; j<numCourses; j++){
-					Course c = db.getCourse(j+1);
+					//Course c = db.getCourse(j+1);
 						// only add prereq constraints if student taking class
 						// and prereq exists
-						ArrayList reqCourses = s.getRequestedCourses();
+						ArrayList<Integer> reqCourses = s.getRequestedCourses();
 						if(s.getStudentId() == requestingStudentId && shadowMode)
 							reqCourses = shadowRequest;
 						if(reqCourses.contains(j+1)){
@@ -359,10 +359,10 @@ public class ComputationalEngine {
 			
 			Map<Integer, Integer> schedule = new HashMap<Integer, Integer>();
 			
-			int i = requestingStudentId - 902448900;
+			int sI = requestingStudentId - 902448900;
 			for(int j=0; j<numCourses; j++){
 				for(int k=0; k<numSemesters;k++){
-					double courseVal = x[i][j][k];
+					double courseVal = x[sI][j][k];
 					if(courseVal > 0){
 						schedule.put(j+1, k+1);
 					}
@@ -380,7 +380,17 @@ public class ComputationalEngine {
 				}
 			}
 			
-			
+		/*for(int i=0; i<numStudents; i++){
+			int id = 902448900+i;
+			System.out.println("Student: "+ id);
+			for(int k=0; k<numSemesters;k++){
+				for(int j=0; j<numCourses; j++){
+					System.out.print(x[i][j][k] + ",");
+				}
+				System.out.println();
+			}
+			System.out.println();
+		}*/
 			
 			if(!shadowMode){
 				db.addSchedule(requestingStudentId,schedule);
@@ -388,17 +398,7 @@ public class ComputationalEngine {
 			
 			return schedule;
 			
-			/*for(int i=0; i<numStudents; i++){
-				int id = 902448900+i;
-				System.out.println("Student: "+ id);
-				for(int k=0; k<numSemesters;k++){
-					for(int j=0; j<numCourses; j++){
-						System.out.print(x[i][j][k] + ",");
-					}
-					System.out.println();
-				}
-				System.out.println();
-			}*/
+			
 			
 		}catch(GRBException e){
 			throw new Exception(e);
