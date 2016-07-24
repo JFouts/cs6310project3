@@ -44,9 +44,8 @@ public class StudentSearchServlet extends ARMSServlet {
     	if ("shadow".equals(action)) {
     		int studentId = Integer.parseInt(request.getParameter("selectedStudent"));
     		
-    		//TODO: Shadow Student
-    		response.sendRedirect("AdminDashboard?userId=" + userId);
-    		
+        	response.sendRedirect("Request?userId=" + userId+"&shadowId="+studentId);
+    		return;
     	} else if ("add".equals(action)) {
     		
     		try {
@@ -54,6 +53,7 @@ public class StudentSearchServlet extends ARMSServlet {
 			} catch (Exception e) {
 				request.setAttribute("error", e.toString());
 				e.printStackTrace();
+				
 				request.getRequestDispatcher("WEB-INF/Error.jsp").forward(request, response);
 				return;
 			}

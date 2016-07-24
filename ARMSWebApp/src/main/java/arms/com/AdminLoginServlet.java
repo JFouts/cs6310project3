@@ -31,10 +31,9 @@ public class AdminLoginServlet extends HttpServlet {
     		userId = -1;
     	}
     	
-		ARMDatabase api = ARMDatabase.getDatabase();
     	Administrator admin = null;
 		try {
-			admin = api.getAdmin(userId);
+			admin = Administrator.get(userId);
 		} catch (Exception e) {
 			request.setAttribute("error", e.toString());
 			e.printStackTrace();

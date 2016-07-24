@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import arms.db.ARMDatabase;
+import arms.db.Administrator;
 import arms.db.Course;
 
 public class RequestServlet extends HttpServlet {
@@ -26,6 +27,12 @@ public class RequestServlet extends HttpServlet {
     	
     	int userId = Integer.parseInt(request.getParameter("userId"));
     	request.setAttribute("userId", userId);
+    	
+    	String shadowId = request.getParameter("shadowId");
+    	if (shadowId!=null && !shadowId.isEmpty()) {
+        	int shadowUserId = Integer.parseInt(shadowId);
+    		request.setAttribute("shadowId", shadowUserId);
+    	}
     	
     	// TODO: get the course list for this user from the database
     	Map<Integer, String> courses = new HashMap<Integer, String>(); 
@@ -58,18 +65,46 @@ public class RequestServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request,
     		HttpServletResponse response) throws ServletException, IOException {
+    	  	    	
+    	Map<String, Integer> schedule = new HashMap<String, Integer>();
+    	String[] courseStrs = request.getParameterValues("course");
+    	ArrayList<Integer> courseIds = new ArrayList<Integer>();
+    	ARMDatabase api = ARMDatabase.getDatabase();
     	
     	request.setAttribute("mode", "output");
     	
     	int userId = Integer.parseInt(request.getParameter("userId"));
     	request.setAttribute("userId", userId);
     	
-    	String[] courseStrs = request.getParameterValues("course");
-    	ArrayList<Integer> courseIds = new ArrayList<Integer>();
-    	for (String s: courseStrs)
+    	for (String s: courseStrs) {
     		courseIds.add(Integer.parseInt(s));
+    	}
     	
-    	// TODO: get schedule from database by passing in courseIds and userId
+    	String shadowId = request.getParameter("shadowId");
+    	if (shadowId!=null && !shadowId.isEmpty()) {
+        	int shadowUserId = Integer.parseInt(shadowId);
+    		request.setAttribute("shadowId", shadowUserId);
+    		try {
+				Administrator admin = Administrator.get(userId);
+				Map<Integer,Integer> shadowSchedule = admin.shadowRequest(courseIds,shadowUserId);
+				for (Integer courseID : shadowSchedule.keySet()) {
+					Course c = api.getCourse(courseID.intValue());
+					schedule.put(c.getName(), shadowSchedule.get(courseID));
+				}
+			} catch (Exception e) {
+				request.setAttribute("error", e.toString());
+				e.printStackTrace();
+				request.getRequestDispatcher("WEB-INF/Error.jsp").forward(request, response);
+				return;
+			}
+    	} else {	    	
+	    	// TODO: get schedule from database by passing in courseIds and userId		
+			for (int c: courseIds)
+				schedule.put(null, 1);
+    	}
+    	
+		request.setAttribute("schedule", schedule);
+    	
     	Map<Integer, String> courses = new HashMap<Integer, String>(); 
         courses.put(1, "6210 - Advanced Operating Systems");
 		courses.put(2, "6250 - Computer Networks");
@@ -89,11 +124,6 @@ public class RequestServlet extends HttpServlet {
 		courses.put(16, "7641 - Machine Learning");
 		courses.put(17, "7646 - Machine Learning For Trading");
 		request.setAttribute("courses", courses);
-		
-		Map<String, Integer> schedule = new HashMap<String, Integer>();
-		for (int c: courseIds)
-			schedule.put(courses.get(c), 1);
-		request.setAttribute("schedule", schedule);
     	
 		request.getRequestDispatcher("WEB-INF/Request.jsp").forward(request, response);
     }

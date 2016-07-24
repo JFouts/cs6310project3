@@ -13,6 +13,11 @@ public class Administrator {
 		this.adminId=id;
 	}
 	
+	public static Administrator get(int id) throws Exception{
+		db = ARMDatabase.getDatabase();
+		return db.getAdmin(id);
+	}
+	
 	public Student registerStudent(){
 		return new Student();
 	}
@@ -33,11 +38,43 @@ public class Administrator {
 		return c;
 	}
 	
-	public void shadowRequest(ArrayList<Integer> courses, int studentId) throws Exception{
+	public Map<Integer,Integer> shadowRequest(ArrayList<Integer> courses, int studentId) throws Exception {
 		
-		//ArrayList<Integer> coursesWithPrereqs = addAllPrereqs(courses);
+		Map<Integer,Integer> schedule = null;
+		ArrayList<Integer> coursesWithPrereqs = addAllPrereqs(courses,studentId);
+		//db.addRequest(studentId, coursesWithPrereqs.size(),coursesWithPrereqs);
 		
+		ComputationalEngine e = new ComputationalEngine();
+		schedule = e.processShadowRequest(studentId,courses);
 		
+		return schedule;
+	}
+	
+	public ArrayList<Integer> addAllPrereqs(ArrayList<Integer> courses,  int studentId) throws Exception{
+		ArrayList<Integer> newCourses = new ArrayList<Integer>();
+		for(int i=0; i< courses.size(); i++)
+			newCourses.add(courses.get(i));
+		
+		do{
+			// set courses to new courses
+			courses.clear();
+			for(int j=0; j< newCourses.size(); j++){
+				courses.add(newCourses.get(j));
+			}
+
+			// populate with unique prereqs
+			for(int i=0; i< courses.size(); i++){
+				ArrayList<Integer> prereqsNotTaken = db.getPrereqsNotTaken(courses.get(i), studentId);
+				for(int j=0; j<prereqsNotTaken.size(); j++){
+					if(!newCourses.contains(prereqsNotTaken.get(j))){
+						newCourses.add(prereqsNotTaken.get(j));
+					}
+				}
+			}
+			// if prereqs are added, continue to loop for nested prereqs
+		} while(newCourses.size() != courses.size());
+		
+		return courses;
 	}
 
 	public int getAdminId() {
