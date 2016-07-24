@@ -27,9 +27,13 @@ function populateStudentForm(x) {
   	  var studentID = $('#studentSelectList').find(":selected").text();
   	  if (studentID!="") {
 	  	  if (confirm("Are sure that you would like to deregister Student "+studentID+"?")) {
-	  	  	alert("Deregiser in progress..");
+	  	  	alert("Deregister in progress..");
 	  	  }
   	  }
+  }
+  
+  function registerStudent() {
+     alert("Student added.");
   }
   
   function loadStudents() {
