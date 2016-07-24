@@ -59,8 +59,8 @@
                           <div class="validation-error"></div>
                         </div>
                         <div class="text-center">
-                          <a class="btn btn-default" href="catalog.html" role="button">Cancel / Back to Catalog</a>
-                          <a class="btn btn-default" href="sdashboard.html" role="button">Cancel / Back to Dashboard</a>
+                          <a class="btn btn-default" href="Catalog?userId=${userId}" role="button">Cancel / Back to Catalog</a>
+                          <a class="btn btn-default" href="AdminDashboard?userId=${userId}" role="button">Cancel / Back to Dashboard</a>
                         </div>
                   </div>
             </c:when>
