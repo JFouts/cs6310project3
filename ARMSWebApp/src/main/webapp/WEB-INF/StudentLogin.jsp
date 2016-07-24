@@ -11,7 +11,7 @@
 <body>
     <%@ include file="Banner.jsp" %>
     <div class="page-content">
-        <form class="form-inline text-center loginform" action="StudentLogin" method="POST">
+        <form id="login" class="form-inline text-center loginform" action="StudentLogin" method="POST">
             <div class="form-group">
                 <label class="sr-only" for="studentid">Student ID</label>
                 <input type="text" class="form-control" id="adminid" name="userId" placeholder="Student ID">
@@ -19,6 +19,14 @@
             <button type="submit" class="btn btn-default">Log in</button>
             <h4><small>Enter your student ID to login.</small></h4>
         </form>
+        <c:if test="${loginFailed}">
+        	<div class="container">
+        		<div class="alert alert-danger alert-dismissible" role="alert">
+					<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<strong>Error!</strong> Invalid User ID
+				</div>
+			</div>
+        </c:if>
     </div>
     <%@ include file="Footer.jsp" %>
 </body>
