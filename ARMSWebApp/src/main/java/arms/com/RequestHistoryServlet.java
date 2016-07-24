@@ -9,8 +9,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import arms.com.CourseServlet.CourseId;
-
 /**
  * RequestHistoryServlet is the controller for the RequestHistory page.
  * This page has one function:
