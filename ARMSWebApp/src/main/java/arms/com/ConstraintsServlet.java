@@ -9,6 +9,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import arms.db.ARMDatabase;
+
 public class ConstraintsServlet extends ARMSServlet {
     private static final long serialVersionUID = 1L;
     
@@ -17,11 +19,19 @@ public class ConstraintsServlet extends ARMSServlet {
     	
     	super.doGet(request, response);
     	
-    	// TODO: grab values from DB
-    	Map<String,String> constraintValues = new HashMap<String,String>();
-    	constraintValues.put("maxCourses", "2");
-    	constraintValues.put("maxSemesters", "12");
-    	constraintValues.put("maxStudentsPerCourse", "100");
+    	ARMDatabase api = ARMDatabase.getDatabase();
+    	
+    	Map<String,Integer> constraintValues = new HashMap<String,Integer>();
+    	try {
+			constraintValues.put("maxCourses", api.getMaxCoursesPerSemester());
+			constraintValues.put("maxSemesters", api.getNumSemesters());
+			constraintValues.put("maxStudentsPerCourse", api.getMaxStudentsPerCourse());
+		} catch (Exception e) {
+			request.setAttribute("error", e.toString());
+			e.printStackTrace();
+			request.getRequestDispatcher("WEB-INF/Error.jsp").forward(request, response);
+			return;
+		}
     	
     	request.setAttribute("constraintValuesMap", constraintValues);
     	
@@ -30,8 +40,22 @@ public class ConstraintsServlet extends ARMSServlet {
     
     protected void doPost(HttpServletRequest request,
             HttpServletResponse response) throws ServletException, IOException {
+    	 	
+    	int userId = Integer.parseInt(request.getParameter("userId"));
+    	int maxCourses = Integer.parseInt(request.getParameter("maxCourses"));
+    	int maxSemesters = Integer.parseInt(request.getParameter("maxSemesters"));
+    	int maxStudentsPerCourse = Integer.parseInt(request.getParameter("maxStudentsPerCourse"));
+
+    	ARMDatabase api = ARMDatabase.getDatabase();
+    	try {
+			api.updateGlobalParams(maxSemesters, maxCourses, maxStudentsPerCourse);
+		} catch (Exception e) {
+			request.setAttribute("error", e.toString());
+			e.printStackTrace();
+			request.getRequestDispatcher("WEB-INF/Error.jsp").forward(request, response);
+			return;
+		}
     	
-    	// TODO: update DB with new values
-    	this.doGet(request, response);
+		response.sendRedirect("Constraints?userId=" + userId);
     }
 }
