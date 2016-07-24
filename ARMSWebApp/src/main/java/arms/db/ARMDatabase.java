@@ -274,9 +274,9 @@ public class ARMDatabase {
     		String sql = "UPDATE course SET name = ?, max_size = ? WHERE id = ?;";
 			PreparedStatement statement = conn.prepareStatement(sql);
 
-			statement.setInt(1, course.getId());
-			statement.setString(2, course.getName());
-			statement.setInt(3, course.getMaxSize());
+			statement.setString(1, course.getName());
+			statement.setInt(2, course.getMaxSize());
+			statement.setInt(3, course.getId());
 			
 			statement.executeUpdate();
 			
