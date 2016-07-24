@@ -19,39 +19,29 @@ public class ComputationalEngine {
 	boolean shadowMode = false;
 	ArrayList<Integer> shadowRequest;
 	
-	public ComputationalEngine(){
+	public ComputationalEngine() throws Exception{
 		db = ARMDatabase.getDatabase();
 		
-		try {
-			numStudents = db.getStudentCount();
-			numCourses = db.getCourseCount();
-			numSemesters = db.getNumSemesters();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		numStudents = db.getStudentCount();
+		numCourses = db.getCourseCount();
+		numSemesters = db.getNumSemesters();
 		
-		try {
-			env = new GRBEnv();
-			env.set(GRB.IntParam.LogToConsole, 0);
-			model = new GRBModel(env);
-			
-			Yijk = new GRBVar[numStudents][numCourses][numSemesters];
-			for(int i=0; i<numStudents; i++){
-				for(int j=0;j<numCourses;j++){
-					for(int k=0; k<numSemesters;k++){
-						Yijk[i][j][k] = model.addVar(0, 1, 0, GRB.BINARY, "Y"+i+j+k);
-					}
+		env = new GRBEnv();
+		env.set(GRB.IntParam.LogToConsole, 0);
+		model = new GRBModel(env);
+		
+		Yijk = new GRBVar[numStudents][numCourses][numSemesters];
+		for(int i=0; i<numStudents; i++){
+			for(int j=0;j<numCourses;j++){
+				for(int k=0; k<numSemesters;k++){
+					Yijk[i][j][k] = model.addVar(0, 1, 0, GRB.BINARY, "Y"+i+j+k);
 				}
 			}
-			
-			//X = model.addVar(0, GRB.INFINITY, 1, GRB.INTEGER, "X");
-			
-			model.update();
-			
-		} catch(GRBException e){
-			e.printStackTrace();
 		}
+		
+		//X = model.addVar(0, GRB.INFINITY, 1, GRB.INTEGER, "X");
+		
+		model.update();
 	}
 	
 	public Map<Integer,Integer> processStudentRequests(int studentId) throws Exception{

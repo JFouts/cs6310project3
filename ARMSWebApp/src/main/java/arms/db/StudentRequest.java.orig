@@ -25,6 +25,13 @@ public class StudentRequest {
 	public void setSchedule(Map<Integer,Integer> sched){
 		schedule = sched;
 	}
+<<<<<<< Updated upstream
+	
+	public java.sql.Timestamp getTimestamp() {
+		return timestamp;
+	}
+	
+=======
 
 	public void setStudentId(int studentId) {
 		this.studentId = studentId;
@@ -58,6 +65,7 @@ public class StudentRequest {
 		return studentId;
 	}
 
+>>>>>>> Stashed changes
 	public Map<Integer, Integer> getSchedule() {
 		return schedule;
 	}
