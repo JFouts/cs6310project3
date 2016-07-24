@@ -22,7 +22,7 @@
 									<label id="totalStudentsLabel">Total # of Students:&nbsp;</label>
 								</div>
 								<div class="col-md-2 pull-left">
-									<span id="totalStudentCount">${numStudents}</span>
+									<span id="totalStudentCount">${report.numStudents}</span>
 								</div>
 							</div>
 							<div class="row">
@@ -30,7 +30,7 @@
 									<label id="totalRequestsLabel">Total # of Requests Submitted:&nbsp;</label>
 								</div>
 								<div class="col-md-2 pull-left">
-									<span id="totalRequestCount">${numRequests}</span>
+									<span id="totalRequestCount">${report.numRequests}</span>
 								</div>
 							</div>
 							<br/>
@@ -40,7 +40,7 @@
 									<table id="courseRequestSummaryList">
 										<thead><tr><th>Course Title</th><th># of Student Requests</th></tr></thead>
 										<tbody>
-										<c:forEach var="courseRequest" items="${courseRequests}">
+										<c:forEach var="courseRequest" items="${report.courseRequests}">
 											<tr>
 											<td>${courseRequest.name}</td>
 											<td>${courseRequest.count}</td>
@@ -57,7 +57,7 @@
 									<table id="studentRequestSummaryList">
 										<thead><tr><th>Student ID</th><th># of Courses for Next Semester</th><th># of Courses for Future Semester(s)</th><th># of Unavailable Courses</th></tr></thead>
 										<tbody>
-										<c:forEach var="studentRequest" items="${studentRequests}">
+										<c:forEach var="studentRequest" items="${report.studentRequests}">
 											<tr>
 											<td>${studentRequest.studentId}</td>
 											<td>${studentRequest.nextSemesterCount}</td>
@@ -77,7 +77,7 @@
 										<label id="maxCoursesLabel">Max # of Courses Per Semester:&nbsp;</label>
 									</div>
 									<div class="col-md-2 pull-left">
-										<span id="maxCourses">${maxCourses}</span>
+										<span id="maxCourses">${report.maxCourses}</span>
 									</div>
 								</div>
 							</div>
@@ -87,7 +87,7 @@
 										<label id="maxSemestersLabel">Max # of Semesters:&nbsp;</label>
 									</div>
 									<div class="col-md-2 pull-left">
-										<span id="maxSemesters">${maxSemesters}</span>
+										<span id="maxSemesters">${report.maxSemesters}</span>
 									</div>
 								</div>
 							</div>
@@ -97,7 +97,7 @@
 										<label id="maxStudentsPerCourseLabel">Max # of Students Per Course:&nbsp;</label>
 									</div>
 									<div class="col-md-2">
-										<span id="maxStudentsPerCourse">${maxStudents}</span>
+										<span id="maxStudentsPerCourse">${report.maxStudents}</span>
 									</div>
 								</div>
 							</div>
