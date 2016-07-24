@@ -45,7 +45,7 @@ public class Student {
 	}
 	
 	public StudentRequest scheduleRequest(ArrayList<Integer> courses) throws Exception{
-		
+		db = ARMDatabase.getDatabase();
 		ArrayList<Integer> coursesWithPrereqs = addAllPrereqs(courses);
 		db.addRequest(studentId, coursesWithPrereqs.size(),coursesWithPrereqs);
 		
@@ -61,6 +61,7 @@ public class Student {
 	}
 	
 	public ArrayList<Integer> addAllPrereqs(ArrayList<Integer> courses) throws Exception{
+		db = ARMDatabase.getDatabase();
 		ArrayList<Integer> newCourses = new ArrayList<Integer>();
 		for(int i=0; i< courses.size(); i++)
 			newCourses.add(courses.get(i));
