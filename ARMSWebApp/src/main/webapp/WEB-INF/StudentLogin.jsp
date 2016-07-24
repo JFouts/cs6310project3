@@ -14,7 +14,7 @@
         <form id="login" class="form-inline text-center loginform" action="StudentLogin" method="POST">
             <div class="form-group">
                 <label class="sr-only" for="studentid">Student ID</label>
-                <input type="text" class="form-control" id="adminid" name="userId" placeholder="Student ID">
+                <input type="text" class="form-control" id="studentid" name="userId" placeholder="Student ID">
             </div>
             <button type="submit" class="btn btn-default">Log in</button>
             <h4><small>Enter your student ID to login.</small></h4>
