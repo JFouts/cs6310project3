@@ -42,7 +42,7 @@
 											Unavailable
 										</c:when>
 										<c:otherwise>
-											${entry.valye}
+											${entry.value}
 										</c:otherwise>
 									</c:choose>
 								</td>
