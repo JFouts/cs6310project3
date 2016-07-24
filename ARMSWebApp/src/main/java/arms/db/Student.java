@@ -34,7 +34,7 @@ public class Student {
 		return db.getStudents();
 	}
 	
-	public ArrayList<String> viewCatalog() throws Exception{
+	public ArrayList<Course> viewCatalog() throws Exception{
 		return db.getCatalog();
 	}
 	

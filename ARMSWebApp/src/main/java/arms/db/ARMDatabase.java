@@ -149,23 +149,28 @@ public class ARMDatabase {
     	}
     }
     
-    public ArrayList<String> getCatalog() throws Exception{
+    public ArrayList<Course> getCatalog() throws Exception{
     	try{
     		stmt = conn.createStatement();
-    		String sql = "SELECT name FROM course ORDER BY course_id ASC";
+    		String sql = "SELECT id, name FROM course ORDER BY course_id ASC";
     	    ResultSet rs = stmt.executeQuery(sql);
     	    
-    	    ArrayList<String> courseNames = new ArrayList<String>();
+    	    ArrayList<Course> courses = new ArrayList<Course>();
     	    
+    	    int id = -1;
+    	    String name = "";
     	      while(rs.next()){
     	         //Retrieve by column name
-    	    	  String name = rs.getString("name");
+    	    	  id = rs.getInt("course_id");
+    	    	  name = rs.getString("name");
     	         
-    	    	  courseNames.add(name);
+    	    	  //courseNames.add(name);
     	      }
+    	      Course c = new Course(id, name);
+    	      
     	      rs.close();
     	      
-    	      return courseNames;
+    	      return courses;
     	} catch (SQLException e){
     		throw new Exception(e);
     	}
