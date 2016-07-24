@@ -54,23 +54,20 @@ public class ComputationalEngine {
 		}
 	}
 	
-	public void processStudentRequests(int studentId){
+	public Map<Integer,Integer> processStudentRequests(int studentId) throws Exception{
 		this.requestingStudentId = studentId;
 		setObjectiveFunc();
 		generateConstraints();
-		try {
-			Map<Integer, Integer> schedule = runModel();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		
+		return runModel();
+		
 	}
 	
 	// to be implemented
-	public void processShadowRequest(int studentId, ArrayList<Integer> shadowReq) {
+	public Map<Integer, Integer> processShadowRequest(int studentId, ArrayList<Integer> shadowReq) throws Exception {
 		shadowMode = true;
 		shadowRequest = shadowReq;
-		processStudentRequests(studentId);
+		return processStudentRequests(studentId);
 		
 	}
 	
