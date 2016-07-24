@@ -23,8 +23,17 @@
 					</tr>
 					<c:forEach var="schedule" items="${request.schedule}">
 						<tr>
-							<td>${schedule.course}</td>
-							<td>${schedule.semester}</td>
+							<td>${courses[schedule.key]}</td>
+							<td>
+								<c:choose>
+									<c:when test="${schedule.value == -1}">
+										Unavailable
+									</c:when>
+									<c:otherwise>
+										${schedule.value}
+									</c:otherwise>
+								</c:choose>
+							</td>
 						</tr>
 					</c:forEach>
 				</table>
