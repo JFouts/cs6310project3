@@ -12,45 +12,43 @@
 		<%@ include file="Banner.jsp" %>
 		<div class="page-content">
 			<div class="container">
-				<%@ include file="Sidebar.jsp" %>
-				<div class="displayPanel">
-					<div class="displayPanelCentered">
-						<h1 class="text-center">Total Requests</h1>
-						<div id="requestHistoryDiv">
-							<table id="requestList">
-								<thead><tr><th>Request ID</th><th>Submitted By</th><th>Submission Date/Time</th></tr></thead>
-								<c:forEach var="request" items="${requests}">
-									<tr>
-									<td>${request.requestId}</td>
-									<td>${request.studentId}</td>
-									<td>${request.timestamp}</td>
-									</tr>
-								</c:forEach>
-								<tbody>
-								</tbody>
-							</table>
-							<br/><br/>
-							<label for="studentList">Filter By Student:</label>
-							<select class="form-control" id="studentList" >
-								<option selected="selected"></option>
-								<c:forEach var="student" items="${studentList}">
-									<option value="${student.studentId}">${student.studentId}</option>
-								</c:forEach>
-							</select>
-							<br/><br/>
-							<label for="courseList">Filter By Course:</label>
-							<select class="form-control" id="courseList" >
-								<option selected="selected"></option>
-                                <c:forEach var="listCourse" items="${courseList}">
-                                    <option value="${listCourse.id}">${listCourse.name}</option>
-                                </c:forEach>
-							</select>
-							<br/><br/>
-							<button class="btn btn-primary" id="filterButton" type="button" onclick="populateTable()">Filter Requests</button>
-						</div>
-					</div>
+				<h1 class="text-center">Total Requests</h1>
+				<div id="requestHistoryDiv">
+					<table id="requestList">
+						<thead><tr><th>Request ID</th><th>Submitted By</th><th>Submission Date/Time</th></tr></thead>
+						<c:forEach var="request" items="${requests}">
+							<tr>
+							<td>${request.requestId}</td>
+							<td>${request.studentId}</td>
+							<td>${request.timestamp}</td>
+							</tr>
+						</c:forEach>
+						<tbody>
+						</tbody>
+					</table>
+					<br/><br/>
+					<label for="studentList">Filter By Student:</label>
+					<select class="form-control" id="studentList" >
+						<option selected="selected"></option>
+						<c:forEach var="student" items="${studentList}">
+							<option value="${student.studentId}">${student.studentId}</option>
+						</c:forEach>
+					</select>
+					<br/><br/>
+					<label for="courseList">Filter By Course:</label>
+					<select class="form-control" id="courseList" >
+						<option selected="selected"></option>
+                        <c:forEach var="listCourse" items="${courseList}">
+                            <option value="${listCourse.id}">${listCourse.name}</option>
+                        </c:forEach>
+					</select>
+					<br/><br/>
+					<button class="btn btn-primary" id="filterButton" type="button" onclick="populateTable()">Filter Requests</button>
 				</div>
 			</div>
+			<div class="text-center">
+		      <a class="btn btn-default" href="AdminDashboard?userId=${userId}" role="button">Back to Dashboard</a>
+		    </div>
 		</div>
     	<%@ include file="Footer.jsp" %>
 		<script src="js/totalrequesthistory.js"></script>
