@@ -40,7 +40,7 @@ public class ComputationalEngine {
 				}
 			}
 			
-			X = model.addVar(0, GRB.INFINITY, 1, GRB.INTEGER, "X");
+			//X = model.addVar(0, GRB.INFINITY, 1, GRB.INTEGER, "X");
 			
 			model.update();
 			
@@ -52,7 +52,7 @@ public class ComputationalEngine {
 	public void processStudentRequests(){
 		setObjectiveFunc();
 		generateConstraints();
-		//runModel();
+		runModel();
 	}
 	
 	// to be implemented
@@ -62,12 +62,22 @@ public class ComputationalEngine {
 	
 	private void setObjectiveFunc(){
 		try	{
-			GRBLinExpr obj = new GRBLinExpr();
-			obj.addTerm(1, X);
-			model.setObjective(obj,GRB.MAXIMIZE);
-		} catch(GRBException e){
+			GRBLinExpr objFuncConstraint = new GRBLinExpr();
+			for(int k=0; k<numSemesters;k++){
+				for(int j=0; j<numCourses; j++){
+					for(int i=0; i<numStudents; i++){
+						objFuncConstraint.addTerm(1, Yijk[i][j][k]);
+					}
+					//String cname = "OBJFUNC_Semester"+k+"_Course"+j;
+					//model.addConstr(objFuncConstraint, GRB.LESS_EQUAL, X, cname);
+				}
+			}
+			model.setObjective(objFuncConstraint,GRB.MAXIMIZE);
+		}catch(GRBException e){
 			e.printStackTrace();
 		}
+			
+			
 	}
 	
 	private void generateConstraints(){
@@ -82,18 +92,15 @@ public class ComputationalEngine {
 		prereqConstraint();
 		
 		// max students per course per semester (if class has a max)
-		//maxStudentConstraint(); 
-		
-		
-		
-		// maximize sum of student requests across all semesters
-		//objectiveFuncConstraint();
+		maxStudentConstraint(); 
 		
 		// courses not requested should equal zero
-		//dontAddCourseConstraint();
+		dontAddCourseConstraint();
 		
-		//
-		//courseAvailabilityConstraint();
+
+		// semesters available
+		courseAvailabilityConstraint();
+				
 		} catch(Exception e){
 			e.printStackTrace();
 		}
@@ -152,6 +159,116 @@ public class ComputationalEngine {
 				e.printStackTrace();
 			}
 		}
+	
+	public void maxStudentConstraint() throws Exception{
+		// max students per course per semester kji
+		
+		try{
+			for(int k=0; k<numSemesters;k++){
+				for(int j=0; j<numCourses; j++){
+					Course c = db.getCourse(j+1);
+					if(c.getMaxSize() != -1 || db.getMaxStudentsPerCourse() != -1){
+						// assign max students from course or globals
+						int maxStudents = c.getMaxSize();
+						if(maxStudents == -1)
+							maxStudents = db.getMaxStudentsPerCourse();
+						GRBLinExpr maxStudentsConstraint = new GRBLinExpr();
+						for(int i=0; i<numStudents; i++){
+							maxStudentsConstraint.addTerm(1, Yijk[i][j][k]);
+						}
+						String cname = "MAXSTUDENT_Course"+j+"_Semester"+k;
+						model.addConstr(maxStudentsConstraint, GRB.LESS_EQUAL, maxStudents, cname);
+					}
+				}
+			}
+			
+		}catch(GRBException e){
+			e.printStackTrace();
+		}
+	}
+	
+	public void dontAddCourseConstraint() throws Exception{
+		try{
+			for(int i=0; i<numStudents; i++){
+				Student s = Student.get(i+902448900);
+				ArrayList<Integer> reqCourses = s.getRequestedCourses();
+				for(int j=0;j< numCourses;j++){
+					int courseId = j+1;
+					// if the course not in student requests, we don't want it to be 1
+					if(!reqCourses.contains(courseId)){
+						GRBLinExpr dontAddCourseConstraint = new GRBLinExpr();
+						//int courseIndex = s.getCourses().get(j)-1;
+						for(int k=0; k<numSemesters;k++){
+							dontAddCourseConstraint.addTerm(1, Yijk[i][j][k]);
+						}
+						String cname = "DONTADDCOURSE_Student"+i+"_Course"+j;
+						model.addConstr(dontAddCourseConstraint, GRB.EQUAL, 0, cname);
+				
+					}
+				}
+			}
+		}catch(GRBException e){
+			e.printStackTrace();
+		}
+	}
+	
+	public void courseAvailabilityConstraint() throws Exception{
+		try{
+			for(int i=0; i<numStudents; i++){
+				for(int j=0; j<numCourses; j++){
+					Course c = db.getCourse(j+1);
+					ArrayList<Integer> offerings = c.getAvailability();
+					
+					for(int index=0;index <= 2; index ++){
+						if(!offerings.contains(index)){
+							GRBLinExpr courseAvailConstraint = new GRBLinExpr();
+							for(int k=0+index; k<numSemesters;k+=3){
+								courseAvailConstraint.addTerm(1, Yijk[i][j][k]);
+							}
+							String cname = "COURSENOTAVAIL_Student"+i+"_Course"+j+"_Term"+index;
+							model.addConstr(courseAvailConstraint, GRB.EQUAL, 0, cname);
+						}
+					}
+				}
+			}	
+		}catch(GRBException e){
+			e.printStackTrace();
+		}
+	}
+	
+	
+	
+	public void runModel(){
+		try{
+			model.optimize();
+			
+			//GRBExpr obj = model.getObjective();
+			
+			double[][][] x = model.get(GRB.DoubleAttr.X, Yijk);
+			for(int k=0; k<numSemesters;k++){
+				for(int j=0; j<numCourses; j++){
+					for(int i=0; i<numStudents; i++){
+						System.out.print(x[i][j][k]);
+					}
+				}
+			}
+			
+			//GRBModel w =  model.fixedModel();
+			//w.get(GRB.DoubleAttr.ObjVal);			
+			/*double x = 0;
+			
+			if(status == GRB.Status.INFEASIBLE)
+				System.out.println("Infeasible");
+			else{
+			    x = model.get(GRB.DoubleAttr.ObjVal);
+				System.out.printf("X=%.2f", x);
+				System.out.println();
+			}*/
+			
+		}catch(GRBException e){
+			e.printStackTrace();
+		}
+	}
 	
 	
 }
