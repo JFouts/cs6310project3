@@ -20,6 +20,14 @@
 	    <h4><small>Enter your administrator ID to login.</small></h4>
 	  </form>
 	</div>
+	<c:if test="${loginFailed}">
+    	<div class="container">
+    		<div class="alert alert-danger alert-dismissible" role="alert">
+				<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<strong>Error!</strong> Invalid Admin ID
+			</div>
+		</div>
+    </c:if>
     <%@ include file="Footer.jsp" %>
 </body>
 </html>

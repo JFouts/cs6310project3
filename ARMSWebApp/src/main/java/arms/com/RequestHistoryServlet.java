@@ -61,7 +61,7 @@ public class RequestHistoryServlet extends ARMSServlet {
     	request.setAttribute("userId", userId);
     	
     	// TODO: get the requests for this user from the database
-    	Map courses = new HashMap(); 
+    	Map<Integer, String> courses = new HashMap<Integer, String>(); 
         courses.put(1, "6210 - Advanced Operating Systems");
 		courses.put(2, "6250 - Computer Networks");
 		courses.put(3, "6262 - Network Security");
