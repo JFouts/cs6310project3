@@ -1,7 +1,5 @@
 package arms.db;
 
-
-
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -46,14 +44,19 @@ public class Student {
 		return c;
 	}
 	
-	public void scheduleRequest(ArrayList<Integer> courses) throws Exception{
+	public StudentRequest scheduleRequest(ArrayList<Integer> courses) throws Exception{
 		
 		ArrayList<Integer> coursesWithPrereqs = addAllPrereqs(courses);
 		db.addRequest(studentId, coursesWithPrereqs.size(),coursesWithPrereqs);
 		
-		//gurobi here?
+		ComputationalEngine e = new ComputationalEngine();
+		e.processStudentRequests(studentId);
 		
-		// return schedule?
+		StudentRequest sr = db.getStudentRequest(studentId);
+		Map<Integer, Integer> sched = db.getStudentSchedule(studentId);
+		sr.setSchedule(sched);
+		
+		return sr;
 		
 	}
 	

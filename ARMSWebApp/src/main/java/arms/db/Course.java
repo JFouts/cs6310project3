@@ -30,6 +30,7 @@ public class Course {
 		availability = new ArrayList<Integer>();
 	}
 	
+	
 	public void addPrereqs(int pId){
 		if(!prereqs.contains(pId))
 			prereqs.add(pId);

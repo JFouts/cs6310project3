@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 public class ARMDatabase {
@@ -389,6 +390,81 @@ public class ARMDatabase {
     	}
     }
     
+    public StudentRequest getStudentRequest(int studentId) throws Exception{
+    	try{
+    	String sql = "SELECT s.request_id, s.timestamp, GROUP_CONCAT(DISTINCT r.course_id) AS courses " +
+				"FROM request_course AS `r` "+
+				"INNER JOIN student_request AS `s` ON (s.request_id = r.request_id) " +
+				"WHERE s.student_id = ? AND " +
+					"s.request_id = (SELECT MAX(request_id) " +
+									"FROM student_request " +
+									"WHERE student_id = ?);";
+    	PreparedStatement statement = conn.prepareStatement(sql);
+
+		statement.setInt(1, studentId);
+		statement.setInt(2, studentId);
+		ResultSet rs = statement.executeQuery();
+	
+		//ArrayList<Integer> requestedCourses = new ArrayList<Integer>();
+		int reqId = -1;
+		java.sql.Timestamp ts = null;
+		String courseStr = "";
+		while(rs.next()){
+         //Retrieve by column name
+    	  reqId = rs.getInt("request_id");
+    	  ts = rs.getTimestamp("timestamp");
+    	  courseStr = rs.getString("courses");
+    	}
+		
+		StudentRequest sr = new StudentRequest(reqId, ts);
+  	  
+  	  // availability never null
+		  String[] courses = courseStr.split(",");
+		  for(int i=0; i<courses.length; i++){
+			  sr.addCourse(Integer.parseInt(courses[i]));
+		  }
+		
+		  rs.close();
+		  return sr;
+    	} catch(SQLException e){
+    		throw new Exception(e);
+    	}
+    }
+    
+    
+    public Map<Integer,Integer> getStudentSchedule(int studentId) throws Exception{
+    	try{
+    		String sql = "SELECT s.course_id, s.semester_id "+
+    				  "FROM schedule_course AS `s` " +
+    				  "INNER JOIN student_schedule AS `a` ON (a.schedule_id = s.schedule_id) "+
+    				  "WHERE a.student_id = ? AND "+
+    				  		"a.schedule_id = (SELECT MAX(schedule_id) "+
+    				  		"FROM student_schedule " +
+    				  		"WHERE student_id = ?);";
+    		PreparedStatement statement = conn.prepareStatement(sql);
+
+    		statement.setInt(1, studentId);
+    		statement.setInt(2, studentId);
+    		ResultSet rs = statement.executeQuery();
+    		
+    		Map<Integer, Integer> sched = new HashMap<Integer,Integer>();
+    		int courseId = -1, sem = -1;
+    		while(rs.next()){
+    	         //Retrieve by column name
+    	    	  courseId = rs.getInt("course_id");
+    	    	  sem = rs.getInt("semester_id");
+    	    	  
+    	    	  sched.put(courseId, sem);
+    	    }
+    		rs.close();
+    		
+    		return sched;
+    		
+    	} catch(SQLException e){
+    		throw new Exception(e);
+    	}
+    }
+    
     
     /*******************GUROBI METHODS************************/
 	
@@ -541,5 +617,48 @@ public class ARMDatabase {
 		}catch (SQLException e){
     		throw new Exception(e);
     	}
+	}
+	
+	public void addSchedule(int studentId, Map<Integer, Integer> schedMap) throws Exception{
+		try{
+	    	  stmt = conn.createStatement();
+	  	      String sql = "INSERT INTO student_schedule (student_id) VALUES (?)";
+	  	      PreparedStatement statement = conn.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
+	  	      
+	  	      
+	  	      statement.setInt(1, studentId);
+	  	      statement.executeUpdate();
+
+	  	      int scheduleId = -1;
+	  	      ResultSet rs = statement.getGeneratedKeys();
+	  	      if(rs != null && rs.next()){
+	  	    	  scheduleId = rs.getInt(1);
+	  	      }
+	  	      
+	  	      Iterator<Integer> courseIds = schedMap.keySet().iterator();
+	  	      while(courseIds.hasNext()){
+	  	    	  int courseId = courseIds.next();
+	  	    	  addScheduleCourse(scheduleId, courseId, schedMap.get(courseId));
+	  	      }	    		
+	    		
+	    	} catch (SQLException e){
+	    		throw new Exception(e);
+	    	}	
+	}
+	
+	public void addScheduleCourse(int schedId, int courseId, int semester) throws Exception{
+		try{
+	    	  //stmt = conn.createStatement();
+	  	      String sql = "INSERT INTO schedule_course (schedule_id, course_id, semester_id) " +
+	  	                   "VALUES (?, ?, ?);";
+	  	      PreparedStatement statement = conn.prepareStatement(sql);
+	  	      
+	  	      statement.setInt(1, schedId);
+	  	      statement.setInt(2, courseId);
+	  	      statement.setInt(3, semester);
+	  	      statement.executeUpdate();
+	    	} catch (SQLException e){
+	    		throw new Exception(e);
+	    	}
 	}
 }

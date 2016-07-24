@@ -1,6 +1,8 @@
 package arms.db;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import gurobi.*;
 
@@ -13,6 +15,8 @@ public class ComputationalEngine {
 	ARMDatabase db;
 	
 	int numStudents,numCourses,numSemesters;
+	int requestingStudent = -1;
+	boolean shadowMode = false;
 	
 	public ComputationalEngine(){
 		db = ARMDatabase.getDatabase();
@@ -49,15 +53,21 @@ public class ComputationalEngine {
 		}
 	}
 	
-	public void processStudentRequests(){
+	public void processStudentRequests(int studentId){
+		this.requestingStudent = studentId;
 		setObjectiveFunc();
 		generateConstraints();
-		runModel();
+		try {
+			runModel();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	// to be implemented
 	/*public void processShadowRequest(int studentId, StudentRequest shadowReq) {
-		
+		shadowMode = true;
 	}*/
 	
 	private void setObjectiveFunc(){
@@ -289,7 +299,7 @@ public class ComputationalEngine {
 	
 	
 	
-	public void runModel(){
+	public void runModel() throws Exception{
 		try{
 			model.optimize();
 			
@@ -300,7 +310,23 @@ public class ComputationalEngine {
 			double[][][] x = model.get(GRB.DoubleAttr.X, Yijk);
 			
 			
-			for(int i=0; i<numStudents; i++){
+			Map<Integer, Integer> schedule = new HashMap<Integer, Integer>();
+			
+			int i = requestingStudent - 902448900;
+			for(int j=0; j<numCourses; j++){
+				for(int k=0; k<numSemesters;k++){
+					double courseVal = x[i][j][k];
+					if(courseVal > 0){
+						schedule.put(j+1, k+1);
+					}
+				}
+			}
+			
+			if(!shadowMode){
+				db.addSchedule(requestingStudent,schedule);
+			}
+			
+			/*for(int i=0; i<numStudents; i++){
 				int id = 902448900+i;
 				System.out.println("Student: "+ id);
 				for(int k=0; k<numSemesters;k++){
@@ -309,18 +335,6 @@ public class ComputationalEngine {
 					}
 					System.out.println();
 				}
-				System.out.println();
-			}
-			
-			//GRBModel w =  model.fixedModel();
-			//w.get(GRB.DoubleAttr.ObjVal);			
-			/*double x = 0;
-			
-			if(status == GRB.Status.INFEASIBLE)
-				System.out.println("Infeasible");
-			else{
-			    x = model.get(GRB.DoubleAttr.ObjVal);
-				System.out.printf("X=%.2f", x);
 				System.out.println();
 			}*/
 			
