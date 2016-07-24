@@ -18,6 +18,7 @@
 	    <p>Select the courses you wish to schedule, adding as many courses as necessary.</p>
 	    <form id="scheduleRequestForm" action="Request" method="POST">
 	      <input type="hidden" name="userId" value=${userId}>
+	      <input type="hidden" name="shadowId" value=${shadowId}>
 	      <div id="srf-dropdowns"></div>
 	      <button type="submit" id="submit" class="btn btn-default">Submit Schedule Request</button>
 	    </form>

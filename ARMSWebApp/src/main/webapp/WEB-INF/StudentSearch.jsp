@@ -41,8 +41,6 @@
 			</div>
 		</div>
     	<%@ include file="Footer.jsp" %>
-		<script src="js/studentsearch.js"></script>
-		<script src="js/common.js"></script>
-		<script src="js/studentsearch.js"></script>
+		<script src="/ARMSWebApp/resources/js/studentsearch.js"></script>
 	</body>
 </html>

@@ -35,7 +35,3 @@ function populateStudentForm(x) {
   function registerStudent() {
      alert("Student added.");
   }
-  
-  function loadStudents() {
-  	// Placeholder to populate students in dropdown
-  }

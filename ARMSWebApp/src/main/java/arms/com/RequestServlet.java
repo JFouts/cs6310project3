@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import arms.db.ARMDatabase;
+import arms.db.Administrator;
 import arms.db.Course;
 import arms.db.Student;
 import arms.db.StudentRequest;
@@ -30,18 +31,25 @@ public class RequestServlet extends HttpServlet {
     	
     	int userId = Integer.parseInt(request.getParameter("userId"));
     	request.setAttribute("userId", userId);
+
+    	String shadowId = request.getParameter("shadowId");
+    	if (shadowId!=null && !shadowId.isEmpty()) {
+        	int shadowUserId = Integer.parseInt(shadowId);
+    		request.setAttribute("shadowId", shadowUserId);
+    	}
     	
     	ARMDatabase api = ARMDatabase.getDatabase();
+    	
     	List<Course> courseList;
 		try {
 			courseList = api.getCatalog();
-			request.setAttribute("courseList", courseList);
 		} catch (Exception e) {
 			request.setAttribute("error", e.toString());
 			e.printStackTrace();
 			request.getRequestDispatcher("WEB-INF/Error.jsp").forward(request, response);
 			return;
 		}
+		request.setAttribute("courseList", courseList);
     	
     	Map<Integer, String> courses = new HashMap<Integer, String>(); 
         for (Course c: courseList)
@@ -69,46 +77,43 @@ public class RequestServlet extends HttpServlet {
     	for (String s: courseStrs)
     		courseIds.add(Integer.parseInt(s));
     	
-		ARMDatabase api = ARMDatabase.getDatabase();
-		
-		Student student = null;
-    	try {
-			student = api.getStudent(userId);
-		} catch (Exception e) {
-			request.setAttribute("error", e.toString());
-			e.printStackTrace();
-			request.getRequestDispatcher("WEB-INF/Error.jsp").forward(request, response);
-			return;
-		}
-		
-    	Map<String, Integer> schedule = new HashMap<String, Integer>();
+    	String shadowId = request.getParameter("shadowId");
+    	
     	StudentRequest sr;
-		try {
-			sr = student.scheduleRequest(courseIds);
-		} catch (Exception e) {
-			e.printStackTrace();
-			request.setAttribute("error", e);
-			request.getRequestDispatcher("WEB-INF/Error.jsp").forward(request, response);
-			return;
-		}
-		
-
-    	request.getRequestDispatcher("WEB-INF/Request.jsp").forward(request, response);
-    	return;
-//    	for (Integer courseId : sr.getSchedule().keySet()) {
-//    		String courseName;
-//			try {
-//				courseName = api.getCourse(courseId).getName();
-//			} catch (Exception e) {
-//				e.printStackTrace();
-//				request.getRequestDispatcher("WEB-INF/Error.jsp").forward(request, response);
-//				return;
-//			}
-//    		schedule.put(courseName, sr.getSchedule().get(courseId));
-//    	}
-//    	
-//		request.setAttribute("schedule", schedule);
-//		out.write("Formatted schedule for page.");
-//		request.getRequestDispatcher("WEB-INF/Request.jsp").forward(request, response);
+    	Map<String, Integer> schedule = new HashMap<String, Integer>();
+    	
+    	ARMDatabase api = ARMDatabase.getDatabase();
+    	
+    	if (shadowId != null && !shadowId.isEmpty()) {
+        	int shadowUserId = Integer.parseInt(shadowId);
+    		request.setAttribute("shadowId", shadowUserId);
+    		try {
+				Administrator admin = Administrator.get(userId);
+				Map<Integer,Integer> shadowSchedule = admin.shadowRequest(courseIds,shadowUserId);
+				for (Integer courseID : shadowSchedule.keySet())
+					schedule.put(api.getCourse(courseID).getName(), shadowSchedule.get(courseID));
+			} catch (Exception e) {
+				request.setAttribute("error", e.toString());
+				e.printStackTrace();
+				request.getRequestDispatcher("WEB-INF/Error.jsp").forward(request, response);
+				return;
+			}
+    	} else {	    	
+    		Student student = null;
+        	try {
+    			student = api.getStudent(userId);
+    			sr = student.scheduleRequest(courseIds);
+    			for (Integer courseId : sr.getSchedule().keySet())
+    				schedule.put(api.getCourse(courseId).getName(), sr.getSchedule().get(courseId));
+    		} catch (Exception e) {
+    			request.setAttribute("error", e.toString());
+    			e.printStackTrace();
+    			request.getRequestDispatcher("WEB-INF/Error.jsp").forward(request, response);
+    			return;
+    		}
+    		request.setAttribute("schedule", schedule);
+    	}
+    	
+		request.getRequestDispatcher("WEB-INF/Request.jsp").forward(request, response);
     }
 }
