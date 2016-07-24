@@ -500,7 +500,7 @@ public class ARMDatabase {
 					"FROM request_course AS `r` "+
 					"INNER JOIN student_request AS `s` ON (s.request_id = r.request_id) " +
 					"WHERE s.student_id = ? AND " +
-						"request_id = (SELECT MAX(request_id) " +
+						"s.request_id = (SELECT MAX(request_id) " +
 										"FROM student_request " +
 										"WHERE student_id = ?);";
 	    	PreparedStatement statement = conn.prepareStatement(sql);
@@ -526,7 +526,7 @@ public class ARMDatabase {
 		try{
 			String sql = "SELECT prereq_id " +
 					"FROM course_prereq "+
-					"WHERE course_id = ?);";
+					"WHERE course_id = ?;";
 	    	PreparedStatement statement = conn.prepareStatement(sql);
 
 			statement.setInt(1, courseId);
