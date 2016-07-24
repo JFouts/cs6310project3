@@ -1,6 +1,7 @@
 package arms.com;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -9,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import arms.db.ARMDatabase;
 import arms.db.Course;
+import arms.db.Semester;
 
 /**
  * CourseServlet is the controller for the Course page.
@@ -58,8 +60,42 @@ public class CourseServlet extends ARMSServlet {
 			request.getRequestDispatcher("WEB-INF/Error.jsp").forward(request, response);
 			return;
 		}
-
+    	
+    	Semester[] availableSemesters = null;
+    	if(course != null) {
+    		ArrayList<Integer> avails = course.getAvailability();
+    		int availsLen = avails.size();
+    		availableSemesters = new Semester[availsLen]; 
+    		for(int i=0;i < availsLen;i++){
+    			availableSemesters[i] = new Semester(avails.get(i));
+    		}
+    	}
+    	
+    	Course[] coursePrereqs = null;
+    	if(course != null) {
+    		ArrayList<Integer> prereqs = course.getPrereqs();
+    		int prereqsLen = prereqs.size();
+    		coursePrereqs = new Course[prereqsLen]; 
+    		for(int i=0;i < prereqsLen;i++){
+    			try {
+					coursePrereqs[i] = api.getCourse(prereqs.get(i));
+				} catch (Exception e) {
+					request.setAttribute("error", e.toString());
+					e.printStackTrace();
+					request.getRequestDispatcher("WEB-INF/Error.jsp").forward(request, response);
+					return;
+				}
+    		}
+    	}
+    	
+    	Semester[] allSemesters = new Semester[3];
+    	for(int i=0;i<3;i++)
+    		allSemesters[i] = new Semester(i);    	
+    	
     	request.setAttribute("course", course);
+    	request.setAttribute("availableSemesters", availableSemesters);
+    	request.setAttribute("coursePrereqs", coursePrereqs);
+    	request.setAttribute("allSemesters", allSemesters);
     	
 		request.getRequestDispatcher("WEB-INF/Course.jsp").forward(request, response);
     }
@@ -72,14 +108,33 @@ public class CourseServlet extends ARMSServlet {
     		HttpServletResponse response) throws ServletException, IOException {
 
     	int courseId = Integer.parseInt(request.getParameter("courseId"));
-    	int sizeLimit = Integer.parseInt(request.getParameter("maxsize"));
+    	int userId = Integer.parseInt(request.getParameter("userId"));
+    	int sizeLimit = Integer.parseInt(request.getParameter("maxSize"));
     	String courseName = request.getParameter("courseName");
+    	
+    	String[] semestersList = request.getParameterValues("availableSemesters");
+    	String[] preqsList = request.getParameterValues("coursePrereqs");
     	
     	Course course = new Course(courseId, courseName, sizeLimit);
     	
-    	ARMDatabase api = ARMDatabase.getDatabase();
-    	api.updateCourse(course);
+    	for(int i=0;i<semestersList.length;i++) {
+    		course.addAvailability(Integer.parseInt(semestersList[i]));
+    	}
     	
-    	this.doGet(request, response);
+    	for(int i=0;i<preqsList.length;i++) {
+    		course.addPrereqs(Integer.parseInt(preqsList[i]));
+    	}
+    	
+    	ARMDatabase api = ARMDatabase.getDatabase();
+    	try {
+    		api.updateCourse(course);
+		} catch (Exception e) {
+			request.setAttribute("error", e.toString());
+			e.printStackTrace();
+			request.getRequestDispatcher("WEB-INF/Error.jsp").forward(request, response);
+			return;
+		}
+
+		response.sendRedirect("Course?userId=" + userId + "&courseId=" + courseId);
     }
 }

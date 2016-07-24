@@ -276,9 +276,9 @@ public class ARMDatabase {
     	}
     }
     
-    public void updateCourse(Course course) {
+    public void updateCourse(Course course) throws Exception {
     	try{
-    		String sql = "UPDATE course SET name = ?, max_size = ? WHERE id = ?;";
+    		String sql = "UPDATE course SET name = ?, max_size = ? WHERE course_id = ?;";
 			PreparedStatement statement = conn.prepareStatement(sql);
 
 			statement.setString(1, course.getName());
@@ -287,10 +287,44 @@ public class ARMDatabase {
 			
 			statement.executeUpdate();
 			
-			//TODO: Store Semesters and Prereqs
+			sql = "DELETE FROM course_availability WHERE course_id = ?;";
+			statement = conn.prepareStatement(sql);
+			
+			statement.setInt(1, course.getId());
+			
+			statement.executeUpdate();
+			
+			for(int i=0;i<course.getAvailability().size();i++) {
+				sql = "INSERT INTO course_availability (course_id, semester) VALUES (?, ?);";
+				statement = conn.prepareStatement(sql);
+				
+				statement.setInt(1, course.getId());
+				statement.setInt(2, course.getAvailability().get(i));
+				
+				statement.executeUpdate();
+			}
+			
+			sql = "DELETE FROM course_prereq WHERE course_id = ?;";
+			statement = conn.prepareStatement(sql);
+			
+			statement.setInt(1, course.getId());
+			
+			statement.executeUpdate();
+			
+			for(int i=0;i<course.getPrereqs().size();i++) {
+				if(course.getPrereqs().get(i) == -1) continue;
+				
+				sql = "INSERT INTO course_prereq (course_id, prereq_id) VALUES (?, ?);";
+				statement = conn.prepareStatement(sql);
+				
+				statement.setInt(1, course.getId());
+				statement.setInt(2, course.getPrereqs().get(i));
+				
+				statement.executeUpdate();
+			}
 			
     	} catch (SQLException e){
-    		e.printStackTrace();
+    		throw new Exception(e);
     	}  		
     }
     

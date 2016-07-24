@@ -15,6 +15,7 @@
               <h1 class="text-center">Edit Course Details: ${course.name}</h1>
                   <div class="container">
                         <div class="form-horizontal">
+        				  <form action="Course?userId=${userId}&courseId=${course.id}" method="POST">
                           <div class="form-group">
                             <label for="coursename" class="col-sm-2 control-label">Name</label>
                             <div class="col-sm-10">
@@ -24,10 +25,31 @@
                           <div class="form-group">
                         <label for="prereqs" class="col-sm-2 control-label">Prerequisites</label>
                         <div class="col-sm-10">
-                          <select multiple class="form-control" id="prereqs">
-                                <option value="none" selected="selected">None</option>
+                          <select multiple class="form-control" id="prereqs" name="coursePrereqs">
+                          		<c:choose>
+                        		<c:when test="${fn:length(coursePrereqs) == 0}">
+                                	<option selected="selected" value="-1">None</option>
+                        		</c:when>
+                        		<c:otherwise>
+                                	<option value="-1">None</option>
+                        		</c:otherwise>
+                        		</c:choose>
                                 <c:forEach var="listCourse" items="${courseList}">
-                                    <option value="${listCourse.id}">${listCourse.name}</option>
+                                	<c:set var="isSelected" scope="session" value="false"/>
+                                	<c:forEach var="prereq" items="${coursePrereqs}">
+                                		<c:if test="${prereq.id == listCourse.id}">
+                                			<c:set var="isSelected" scope="session" value="true"/>
+                                		</c:if> 
+                    				</c:forEach>
+                                
+                            		<c:choose>
+                            		<c:when test="${isSelected}">
+                                    	<option selected="selected" value="${listCourse.id}">${listCourse.name}</option>
+                            		</c:when>
+                            		<c:otherwise>
+                                    	<option value="${listCourse.id}">${listCourse.name}</option>
+                            		</c:otherwise>
+                            		</c:choose>
                                 </c:forEach>
                               </select>
                               <p class="help-block">Note: Use control/shift to select multiple prerequisites.</p>
@@ -36,10 +58,24 @@
                       <div class="form-group">
                         <label for="availability" class="col-sm-2 control-label">Availability</label>
                         <div class="col-sm-10">
-                          <select multiple class="form-control" id="availability">
-                            <option value="1">Fall</option>
-                            <option value="2">Spring</option>
-                            <option value="3">Summer</option>
+                          <select multiple class="form-control" id="availability" name="availableSemesters">
+                                <c:forEach var="semester" items="${allSemesters}">
+                                	<c:set var="isSelected" scope="session" value="false"/>
+                                	<c:forEach var="availSem" items="${availableSemesters}">
+                                		<c:if test="${availSem.id == semester.id}">
+                                			<c:set var="isSelected" scope="session" value="true"/>
+                                		</c:if> 
+                    				</c:forEach>
+                                
+                            		<c:choose>
+                            		<c:when test="${isSelected}">
+                                    	<option selected="selected" value="${semester.id}">${semester.term}</option>
+                            		</c:when>
+                            		<c:otherwise>
+                                    	<option value="${semester.id}">${semester.term}</option>
+                            		</c:otherwise>
+                            		</c:choose>
+                                </c:forEach>
                           </select>
                           <p class="help-block">Note: Use control/shift to select multiple semesters.</p>
                         </div>
@@ -58,6 +94,7 @@
                           </div>
                           <div class="validation-error"></div>
                         </div>
+                        </form>
                         <div class="text-center">
                           <a class="btn btn-default" href="Catalog?userId=${userId}" role="button">Cancel / Back to Catalog</a>
                           <a class="btn btn-default" href="AdminDashboard?userId=${userId}" role="button">Cancel / Back to Dashboard</a>
@@ -75,16 +112,16 @@
                   <tr>
                     <th>Prerequisites</td>
                     <td>
-                    <c:forEach var="prereq" items="${course.prereqs}">
-                        ${prereq}</br> 
+                    <c:forEach var="prereq" items="${coursePrereqs}">
+                        ${prereq.name}</br> 
                     </c:forEach>
                     </td>
                   </tr>
                   <tr>
                     <th>Availability</td>
                     <td>
-                    <c:forEach var="avail" items="${course.availability}">
-                        ${avail}</br>
+                    <c:forEach var="avail" items="${availableSemesters}">
+                        ${avail.term}</br>
                     </c:forEach>
                     </td>
                   </tr>
