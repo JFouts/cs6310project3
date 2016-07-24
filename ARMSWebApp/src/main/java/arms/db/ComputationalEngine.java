@@ -1,4 +1,4 @@
-package arms.db;
+
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,8 +15,9 @@ public class ComputationalEngine {
 	ARMDatabase db;
 	
 	int numStudents,numCourses,numSemesters;
-	int requestingStudent = -1;
+	int requestingStudentId = -1;
 	boolean shadowMode = false;
+	ArrayList<Integer> shadowRequest;
 	
 	public ComputationalEngine(){
 		db = ARMDatabase.getDatabase();
@@ -54,11 +55,11 @@ public class ComputationalEngine {
 	}
 	
 	public void processStudentRequests(int studentId){
-		this.requestingStudent = studentId;
+		this.requestingStudentId = studentId;
 		setObjectiveFunc();
 		generateConstraints();
 		try {
-			runModel();
+			Map<Integer, Integer> schedule = runModel();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -66,9 +67,12 @@ public class ComputationalEngine {
 	}
 	
 	// to be implemented
-	/*public void processShadowRequest(int studentId, StudentRequest shadowReq) {
+	public void processShadowRequest(int studentId, ArrayList<Integer> shadowReq) {
 		shadowMode = true;
-	}*/
+		shadowRequest = shadowReq;
+		processStudentRequests(studentId);
+		
+	}
 	
 	private void setObjectiveFunc(){
 		try	{
@@ -93,6 +97,9 @@ public class ComputationalEngine {
 	private void generateConstraints(){
 		// semester constraint already imposed
 		try {
+		
+		//studentPriorityConstraint();
+			
 		// max courses per semester per student
 		if(db.getMaxCoursesPerSemester() != 0){	
 			maxCourseConstraint();
@@ -119,6 +126,10 @@ public class ComputationalEngine {
 			e.printStackTrace();
 		}
 	}
+	
+	//public void studentPriorityConstraint() throws Exception{
+		
+	//}
 	
 	public void maxCourseConstraint() throws Exception{
 		int maxCourses = db.getMaxCoursesPerSemester();
@@ -149,7 +160,10 @@ public class ComputationalEngine {
 					Course c = db.getCourse(j+1);
 						// only add prereq constraints if student taking class
 						// and prereq exists
-						if(s.getRequestedCourses().contains(j+1)){
+						ArrayList reqCourses = s.getRequestedCourses();
+						if(s.getStudentId() == requestingStudentId && shadowMode)
+							reqCourses = shadowRequest;
+						if(reqCourses.contains(j+1)){
 							ArrayList<Integer> prereqs = db.getPrereqs(j+1);
 							if(prereqs.size() > 0){
 								for(int preJ=0; preJ <prereqs.size(); preJ++){
@@ -182,7 +196,10 @@ public class ComputationalEngine {
 					Course c = db.getCourse(j+1);
 						// only add prereq constraints if student taking class
 						// and prereq exists
-						if(s.getRequestedCourses().contains(j+1)){
+						ArrayList reqCourses = s.getRequestedCourses();
+						if(s.getStudentId() == requestingStudentId && shadowMode)
+							reqCourses = shadowRequest;
+						if(reqCourses.contains(j+1)){
 							ArrayList<Integer> prereqs = db.getPrereqs(j+1);
 							if(prereqs.size() > 0){
 								for(int preJ=0; preJ <prereqs.size(); preJ++){
@@ -240,6 +257,8 @@ public class ComputationalEngine {
 			for(int i=0; i<numStudents; i++){
 				Student s = Student.get(i+902448900);
 				ArrayList<Integer> reqCourses = s.getRequestedCourses();
+				if(s.getStudentId() == requestingStudentId && shadowMode)
+					reqCourses = shadowRequest;
 				for(int j=0;j< numCourses;j++){
 					int courseId = j+1;
 					// if the course not in student requests, we don't want it to be 1
@@ -299,7 +318,7 @@ public class ComputationalEngine {
 	
 	
 	
-	public void runModel() throws Exception{
+	public Map<Integer,Integer> runModel() throws Exception{
 		try{
 			model.optimize();
 			
@@ -312,7 +331,7 @@ public class ComputationalEngine {
 			
 			Map<Integer, Integer> schedule = new HashMap<Integer, Integer>();
 			
-			int i = requestingStudent - 902448900;
+			int i = requestingStudentId - 902448900;
 			for(int j=0; j<numCourses; j++){
 				for(int k=0; k<numSemesters;k++){
 					double courseVal = x[i][j][k];
@@ -322,9 +341,24 @@ public class ComputationalEngine {
 				}
 			}
 			
-			if(!shadowMode){
-				db.addSchedule(requestingStudent,schedule);
+			// add class with -1 if it couldn't be assigned
+			Student s = Student.get(requestingStudentId);
+			ArrayList<Integer> reqCourses = s.getRequestedCourses();
+			if(s.getStudentId() == requestingStudentId && shadowMode)
+				reqCourses = shadowRequest;
+			for(int j= 0; j<reqCourses.size(); j++){
+				if (schedule.get(reqCourses.get(j)) == null){
+					schedule.put(reqCourses.get(j), -1);
+				}
 			}
+			
+			
+			
+			if(!shadowMode){
+				db.addSchedule(requestingStudentId,schedule);
+			} 
+			
+			return schedule;
 			
 			/*for(int i=0; i<numStudents; i++){
 				int id = 902448900+i;
@@ -339,7 +373,7 @@ public class ComputationalEngine {
 			}*/
 			
 		}catch(GRBException e){
-			e.printStackTrace();
+			throw new Exception(e);
 		}
 	}
 	
