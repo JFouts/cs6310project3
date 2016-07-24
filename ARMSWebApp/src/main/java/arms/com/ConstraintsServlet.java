@@ -9,11 +9,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class ConstraintsServlet extends HttpServlet {
+public class ConstraintsServlet extends ARMSServlet {
     private static final long serialVersionUID = 1L;
     
     protected void doGet(HttpServletRequest request,
             HttpServletResponse response) throws ServletException, IOException {
+    	
+    	super.doGet(request, response);
     	
     	// TODO: grab values from DB
     	Map<String,String> constraintValues = new HashMap<String,String>();
