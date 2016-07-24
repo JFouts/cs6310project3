@@ -10,6 +10,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 public class ARMDatabase {
@@ -523,6 +524,162 @@ public class ARMDatabase {
     	}
     }
     
+    public SummaryReport generateSummaryReport() throws Exception {
+    	SummaryReport report = new SummaryReport();
+    	
+    	report.setNumStudents(getStudentCount());
+    	report.setNumRequests(getRequestCount());    	
+    	report.setMaxCourses(getMaxCoursesPerSemester());
+    	report.setMaxSemesters(getNumSemesters());
+    	report.setMaxStudents(getMaxStudentsPerCourse());
+    	
+    	List<Course> catalog = getCatalog();
+    	for(int i=0;i<catalog.size();i++) {
+    		SummaryReport.CourseRequest request = new SummaryReport.CourseRequest(catalog.get(i).getName(), getCourseRequestCount(catalog.get(i).getId()));
+    		report.addCourseRequest(request);
+    	}
+    	
+    	Iterator<Student> studentIterator = getStudents().values().iterator();
+    	while(studentIterator.hasNext()) {
+    		Student s = studentIterator.next();
+			SummaryReport.StudentRequest request = 
+					new SummaryReport.StudentRequest(
+							s.getStudentId(),
+							getStudentNextSemesterCount(s.getStudentId(), 0),
+							getStudentFutureSemesterCount(s.getStudentId(), 0),
+							getStudentUnavilableCount(s.getStudentId())
+							);
+			report.addStudentRequest(request);
+    	}   	
+    	
+    	return report;
+    }
+    
+	public int getRequestCount() throws Exception{
+		try{
+    		stmt = conn.createStatement();
+    		String sql = "SELECT COUNT(request_id) AS num_request FROM student_request;";
+    	    ResultSet rs = stmt.executeQuery(sql);
+    	    
+    	    int numRequests = -1;
+    	    
+    	      while(rs.next()){
+    	         //Retrieve by column name
+    	    	  numRequests = rs.getInt("num_request");
+    	      }
+    	      
+    	      rs.close();
+    	      return numRequests;
+		} catch (SQLException e){
+    		throw new Exception(e);
+    	}
+	}
+	
+	public int getStudentNextSemesterCount(int studentId, int currentSemester) throws Exception{
+		try{
+    		String sql = "SELECT COUNT(schedule_course.schedule_id) AS num_request " +
+    				"FROM schedule_course " +
+    				"INNER JOIN student_schedule ON student_schedule.schedule_id = schedule_course.schedule_id " +
+    				"WHERE student_schedule.student_id = ? " +
+    				"AND schedule_course.semester_id = ?;";
+    		PreparedStatement statement = conn.prepareStatement(sql);
+
+    		statement.setInt(1, studentId);
+    		statement.setInt(2, currentSemester);    		
+    		
+    	    ResultSet rs = statement.executeQuery();
+    		
+    	    int numRequests = -1;
+    	    
+    	      while(rs.next()){
+    	         //Retrieve by column name
+    	    	  numRequests = rs.getInt("num_request");
+    	      }
+    	      
+    	      rs.close();
+    	      return numRequests;
+		} catch (SQLException e){
+    		throw new Exception(e);
+    	}
+	}
+	
+	public int getStudentFutureSemesterCount(int studentId, int currentSemester) throws Exception{
+		try{
+    		String sql = "SELECT COUNT(schedule_course.schedule_id) AS num_request " +
+    				"FROM schedule_course " +
+    				"INNER JOIN student_schedule ON student_schedule.schedule_id = schedule_course.schedule_id " +
+    				"WHERE student_schedule.student_id = ? " +
+    				"AND schedule_course.semester_id > ?;";
+    		PreparedStatement statement = conn.prepareStatement(sql);
+
+    		statement.setInt(1, studentId);
+    		statement.setInt(2, currentSemester);    		
+    		
+    	    ResultSet rs = statement.executeQuery();
+    		
+    	    int numRequests = -1;
+    	    
+    	      while(rs.next()){
+    	         //Retrieve by column name
+    	    	  numRequests = rs.getInt("num_request");
+    	      }
+    	      
+    	      rs.close();
+    	      return numRequests;
+		} catch (SQLException e){
+    		throw new Exception(e);
+    	}
+	}
+	
+	public int getStudentUnavilableCount(int studentId) throws Exception{
+		try{
+    		String sql = "SELECT COUNT(schedule_course.schedule_id) AS num_request " +
+    				"FROM schedule_course " +
+    				"INNER JOIN student_schedule ON student_schedule.schedule_id = schedule_course.schedule_id " +
+    				"WHERE student_schedule.student_id = ? " +
+    				"AND schedule_course.semester_id = -1;";
+    		PreparedStatement statement = conn.prepareStatement(sql);
+
+    		statement.setInt(1, studentId);   		
+    		
+    	    ResultSet rs = statement.executeQuery();
+    		
+    	    int numRequests = -1;
+    	    
+    	      while(rs.next()){
+    	         //Retrieve by column name
+    	    	  numRequests = rs.getInt("num_request");
+    	      }
+    	      
+    	      rs.close();
+    	      return numRequests;
+		} catch (SQLException e){
+    		throw new Exception(e);
+    	}
+	}
+	
+	public int getCourseRequestCount(int courseId) throws Exception{
+		try{
+    		String sql = "SELECT COUNT(request_id) AS num_request FROM request_course WHERE course_id = ?;";
+    		PreparedStatement statement = conn.prepareStatement(sql);
+
+    		statement.setInt(1, courseId);
+    		
+    	    ResultSet rs = statement.executeQuery();
+    		
+    	    int numRequests = -1;
+    	    
+    	      while(rs.next()){
+    	         //Retrieve by column name
+    	    	  numRequests = rs.getInt("num_request");
+    	      }
+    	      
+    	      rs.close();
+    	      return numRequests;
+		} catch (SQLException e){
+    		throw new Exception(e);
+    	}
+	}
     
     /*******************GUROBI METHODS************************/
 	
