@@ -93,10 +93,7 @@ public class RequestServlet extends HttpServlet {
 				for (Integer courseID : shadowSchedule.keySet())
 					schedule.put(api.getCourse(courseID).getName(), shadowSchedule.get(courseID));
 			} catch (Exception e) {
-				request.setAttribute("error", e.toString());
-				e.printStackTrace();
-				request.getRequestDispatcher("WEB-INF/Error.jsp").forward(request, response);
-				return;
+				throw new ServletException(e);
 			}
     	} else {	    	
     		Student student = null;
@@ -106,10 +103,7 @@ public class RequestServlet extends HttpServlet {
     			for (Integer courseId : sr.getSchedule().keySet())
     				schedule.put(api.getCourse(courseId).getName(), sr.getSchedule().get(courseId));
     		} catch (Exception e) {
-    			request.setAttribute("error", e.toString());
-    			e.printStackTrace();
-    			request.getRequestDispatcher("WEB-INF/Error.jsp").forward(request, response);
-    			return;
+				throw new ServletException(e);
     		}
     		request.setAttribute("schedule", schedule);
     	}

@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class StudentRequest {
+	int studentId;
 	int requestId;
 	java.sql.Timestamp timestamp;
 	ArrayList<Integer> courses;
@@ -24,11 +25,39 @@ public class StudentRequest {
 	public void setSchedule(Map<Integer,Integer> sched){
 		schedule = sched;
 	}
-	
+
+	public void setStudentId(int studentId) {
+		this.studentId = studentId;
+	}
+
+	public int getRequestId() {
+		return requestId;
+	}
+
+	public void setRequestId(int requestId) {
+		this.requestId = requestId;
+	}
+
 	public java.sql.Timestamp getTimestamp() {
 		return timestamp;
 	}
-	
+
+	public void setTimestamp(java.sql.Timestamp timestamp) {
+		this.timestamp = timestamp;
+	}
+
+	public ArrayList<Integer> getCourses() {
+		return courses;
+	}
+
+	public void setCourses(ArrayList<Integer> courses) {
+		this.courses = courses;
+	}
+
+	public int getStudentId() {
+		return studentId;
+	}
+
 	public Map<Integer, Integer> getSchedule() {
 		return schedule;
 	}

@@ -535,15 +535,15 @@ public class ARMDatabase {
     	
     	List<Course> catalog = getCatalog();
     	for(int i=0;i<catalog.size();i++) {
-    		SummaryReport.CourseRequest request = new SummaryReport.CourseRequest(catalog.get(i).getName(), getCourseRequestCount(catalog.get(i).getId()));
+    		SummaryReport.SummaryCourseRequest request = new SummaryReport.SummaryCourseRequest(catalog.get(i).getName(), getCourseRequestCount(catalog.get(i).getId()));
     		report.addCourseRequest(request);
     	}
     	
     	Iterator<Student> studentIterator = getStudents().values().iterator();
     	while(studentIterator.hasNext()) {
     		Student s = studentIterator.next();
-			SummaryReport.StudentRequest request = 
-					new SummaryReport.StudentRequest(
+			SummaryReport.SummaryStudentRequest request = 
+					new SummaryReport.SummaryStudentRequest(
 							s.getStudentId(),
 							getStudentNextSemesterCount(s.getStudentId(), 0),
 							getStudentFutureSemesterCount(s.getStudentId(), 0),
@@ -690,6 +690,27 @@ public class ARMDatabase {
 		statement.setInt(3, maxStudents);
 		
 		statement.executeUpdate();
+	}
+	
+	public List<StudentRequest> getAllStudentRequests() throws Exception {
+		String sql = "SELECT request_id, student_id, timestamp " +
+				"FROM student_request " + 
+				"ORDER BY request_id DESC;";
+		
+		PreparedStatement statement = conn.prepareStatement(sql);
+		
+	    ResultSet rs = statement.executeQuery();
+
+	    List<StudentRequest> requests = new ArrayList<StudentRequest>();
+	    while(rs.next()){
+	    	//Retrieve by column name
+	    	StudentRequest request = new StudentRequest(rs.getInt("request_id"),  rs.getTimestamp("timestamp"));
+	    	request.setStudentId(rs.getInt("student_id"));
+	    	requests.add(request);
+	    }
+	  
+		rs.close();
+		return requests;
 	}
 	    
     /*******************GUROBI METHODS************************/
@@ -886,5 +907,34 @@ public class ARMDatabase {
 	    	} catch (SQLException e){
 	    		throw new Exception(e);
 	    	}
+	}
+	
+	public ArrayList<Integer> getStudentRequestPriority() throws Exception{
+		try{
+	    	 stmt = conn.createStatement();
+	    	 String sql = "SELECT student_id "+
+	    			 	"FROM student_request " +
+	    			 	"WHERE request_id IN (SELECT MAX(request_id) " +
+											"FROM student_request " +
+											"GROUP BY student_id) " +
+						"ORDER BY timestamp ASC;";
+	    	
+	    	 ResultSet rs = stmt.executeQuery(sql);
+	    	    
+	    	 ArrayList<Integer> studentPriority = new ArrayList<Integer>();
+	    	    
+	    	 while(rs.next()){
+	    	         //Retrieve by column name
+	    		 int id = rs.getInt("student_id");
+	    		 studentPriority.add(id);
+	    	 }
+	    	 
+	    	      
+	    	 rs.close();
+	    	 return studentPriority;
+	    	 
+		} catch (SQLException e){
+    		throw new Exception(e);
+    	}
 	}
 }

@@ -5,10 +5,10 @@ import java.util.List;
 
 public class SummaryReport {
 	
-	public static class CourseRequest {
+	public static class SummaryCourseRequest {
     	String name;
     	int count;
-    	public CourseRequest(String name, int count) {
+    	public SummaryCourseRequest(String name, int count) {
     		this.name = name;
     		this.count = count;
     	}
@@ -26,13 +26,13 @@ public class SummaryReport {
 		}
     }
     
-    public static class StudentRequest {
+    public static class SummaryStudentRequest {
     	int studentId;
     	int nextSemesterCount;
     	int futureSemesterCount;
     	int unavilableCount;
     	
-    	public StudentRequest(int studentId, int nextSemesterCount, int futureSemesterCount, int unavilableCount) {
+    	public SummaryStudentRequest(int studentId, int nextSemesterCount, int futureSemesterCount, int unavilableCount) {
     		this.studentId = studentId;
     		this.nextSemesterCount = nextSemesterCount;
     		this.futureSemesterCount = futureSemesterCount;
@@ -74,8 +74,8 @@ public class SummaryReport {
 	
 	private int numStudents;
 	private int numRequests;
-	private List<CourseRequest> courseRequests = new ArrayList<CourseRequest>();
-	private List<StudentRequest> studentRequests = new ArrayList<StudentRequest>();
+	private List<SummaryCourseRequest> courseRequests = new ArrayList<SummaryCourseRequest>();
+	private List<SummaryStudentRequest> studentRequests = new ArrayList<SummaryStudentRequest>();
 	private int maxCourses;
 	private int maxSemesters;
 	private int maxStudents;
@@ -92,16 +92,16 @@ public class SummaryReport {
 	public void setNumRequests(int numRequests) {
 		this.numRequests = numRequests;
 	}
-	public List<CourseRequest> getCourseRequests() {
+	public List<SummaryCourseRequest> getCourseRequests() {
 		return courseRequests;
 	}
-	public void setCourseRequests(List<CourseRequest> courseRequests) {
+	public void setCourseRequests(List<SummaryCourseRequest> courseRequests) {
 		this.courseRequests = courseRequests;
 	}
-	public List<StudentRequest> getStudentRequests() {
+	public List<SummaryStudentRequest> getStudentRequests() {
 		return studentRequests;
 	}
-	public void setStudentRequests(List<StudentRequest> studentRequests) {
+	public void setStudentRequests(List<SummaryStudentRequest> studentRequests) {
 		this.studentRequests = studentRequests;
 	}
 	public int getMaxCourses() {
@@ -122,10 +122,10 @@ public class SummaryReport {
 	public void setMaxStudents(int maxStudents) {
 		this.maxStudents = maxStudents;
 	}
-	public void addCourseRequest(CourseRequest request) {
+	public void addCourseRequest(SummaryCourseRequest request) {
 		courseRequests.add(request);
 	}
-	public void addStudentRequest(StudentRequest request) {
+	public void addStudentRequest(SummaryStudentRequest request) {
 		studentRequests.add(request);
 	}
 }
