@@ -16,14 +16,11 @@
         <div class="container">
             <table class="table table-striped">
                 <tr>
-                    <th>Course ID</th>
                     <th>Course Name</th>
                 </tr>
                 
                 <c:forEach var="course" items="${courseList}">
 	                <tr>
-	                    <td><a href="Course?userId=${userId}&courseId=${course.id}">${course.id}</a>
-	                    </td>
 	                    <td><a href="Course?userId=${userId}&courseId=${course.id}">${course.name}</a>
 	                    </td>
 	                </tr>	

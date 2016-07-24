@@ -152,7 +152,7 @@ public class ARMDatabase {
     public ArrayList<Course> getCatalog() throws Exception{
     	try{
     		stmt = conn.createStatement();
-    		String sql = "SELECT id, name FROM course ORDER BY course_id ASC";
+    		String sql = "SELECT course_id, name FROM course ORDER BY course_id ASC";
     	    ResultSet rs = stmt.executeQuery(sql);
     	    
     	    ArrayList<Course> courses = new ArrayList<Course>();
@@ -163,10 +163,12 @@ public class ARMDatabase {
     	         //Retrieve by column name
     	    	  id = rs.getInt("course_id");
     	    	  name = rs.getString("name");
-    	         
+
+        	      Course c = new Course(id, name);
+        	      courses.add(c);
+        	      
     	    	  //courseNames.add(name);
     	      }
-    	      Course c = new Course(id, name);
     	      
     	      rs.close();
     	      

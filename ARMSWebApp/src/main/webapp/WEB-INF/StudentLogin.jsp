@@ -4,12 +4,10 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <html>
-
 <head>
 	<%@ include file="Header.jsp" %>
     <link type="text/css" rel="stylesheet" href="/ARMSWebApp/resources/css/login.css" />
 </head>
-
 <body>
     <%@ include file="Banner.jsp" %>
     <div class="page-content">
@@ -24,5 +22,4 @@
     </div>
     <%@ include file="Footer.jsp" %>
 </body>
-
 </html>
