@@ -1,0 +1,121 @@
+<html>
+	<head>
+		<meta charset="utf-8"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+		<title>Georgia Tech :: Academic Resource Management System</title>
+		<link type="text/css" rel="stylesheet" href="css/bootstrap.min.css"/>
+		<link type="text/css" rel="stylesheet" href="css/common.css"/>
+		<link type="text/css" rel="stylesheet" href="css/summary.css"/>	
+		<link rel="shortcut icon" type="image/x-icon" href="images/favicon.png" />
+	</head>
+	<body onload="loadSummaryPage('summaryReportDiv')">
+		<div class="bannerHeader">
+			<img src="images/GT_image.png" alt="GT Header Image" height="100" width="200"/>
+			<img src="images/ARMS_header.png" alt="ARMS Header Image" height="100" width="600" align="right"/>
+		</div>
+		<div class="bannerHeaderGold">
+			<div class="greeting" align="right">
+				<span>Welcome, Student 12345!</span>
+				<a class="logout" href="alogin.html" style="color:#FFFFFF">Logout</a>
+			</div>
+		</div>
+		<div class="page-content">
+			<div class="container">
+				<div class="sidebar">
+					<div id="catalogDiv" class=sidebarElement><a href="catalog.html" style="color:#FFFFFF">View Catalog</a></div>
+					<div id="studentSearchDiv" class=sidebarElement><a href="studentsearch.html" style="color:#FFFFFF">Student Search</a></div>
+					<div id="systemUpdateDiv" class=sidebarElement><a href="systemupdate.html" style="color:#FFFFFF">Update System Settings</a></div>
+					<div id="requestHistoryDiv" class=sidebarElement><a href="totalrequesthistory.html" style="color:#FFFFFF">View Request History</a></div>
+					<div id="summaryReportDiv" class=sidebarElement><a href="summary.html" style="color:#FFFFFF">Generate Summary Report</a></div>
+				</div>
+				<div class="displayPanel">
+					<div class="container">
+						<h1 class="text-center">ARMS Summary Report</h1>
+						<div id="requestHistoryDiv">
+							<div class="row">
+								<div class="col-md-3 pull-left">
+									<label id="totalStudentsLabel">Total # of Students:&nbsp;</label>
+								</div>
+								<div class="col-md-2 pull-left">
+									<span id="totalStudentCount"></span>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-3 pull-left">
+									<label id="totalRequestsLabel">Total # of Requests Submitted:&nbsp;</label>
+								</div>
+								<div class="col-md-2 pull-left">
+									<span id="totalRequestCount"></span>
+								</div>
+							</div>
+							<br/>
+							<h2>Course Request Summary</h2><br/>
+							<div class="row">
+								<div class="col-md-8 pull-left">
+									<table id="courseRequestSummaryList">
+										<thead><tr><th>Course Title</th><th># of Student Requests</th></thead>
+										<tbody>
+										</tbody>
+									</table>
+								</div>
+							</div>
+							<br/><br/><br/>
+							<h2>Student Request Summary</h2><br/>
+							<div class="row">
+								<div class="col-md-10 pull-left">
+									<table id="studentRequestSummaryList">
+										<thead><tr><th>Student ID</th><th># of Courses for Next Semester</th><th># of Courses for Future Semester(s)</th><th># of Unavailable Courses</th></thead>
+										<tbody>
+										</tbody>
+									</table>
+								</div>
+							</div>
+							<br/><br/><br/>
+							<h2>ARMS Configuration Parameters</h2><br/>
+							<div class="row">
+								<div class="form-group">
+									<div class="col-md-3 pull-left">
+										<label id="maxCoursesLabel">Max # of Courses Per Semester:&nbsp;</label>
+									</div>
+									<div class="col-md-2 pull-left">
+										<span id="maxCourses"></span>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="form-group">
+									<div class="col-md-3 pull-left">
+										<label id="maxSemestersLabel">Max # of Semesters:&nbsp;</label>
+									</div>
+									<div class="col-md-2 pull-left">
+										<span id="maxSemesters"></span>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="form-group">
+									<div class="col-md-3 pull-left">
+										<label id="maxStudentsPerCourseLabel">Max # of Students Per Course:&nbsp;</label>
+									</div>
+									<div class="col-md-2">
+										<span id="maxStudentsPerCourse"></span>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!--<div class="footer">
+			<div class="bannerGrey"></div>
+			<div class="bannerGold"></div>
+		</div>-->
+
+			<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+			<script src="js/bootstrap.min.js"></script>
+			<script src="js/common.js"></script>		
+			<script src="js/summary.js"></script>
+
+		</body>
+	</html>

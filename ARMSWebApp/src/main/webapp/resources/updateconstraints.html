@@ -1,0 +1,95 @@
+<html>
+	<head>
+		<meta charset="utf-8"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+		<title>Georgia Tech :: Academic Resource Management System</title>
+		<link type="text/css" rel="stylesheet" href="css/bootstrap.min.css"/>
+		<link type="text/css" rel="stylesheet" href="css/common.css"/>
+		<link type="text/css" rel="stylesheet" href="css/updateconstraints.css"/>
+		<link rel="shortcut icon" type="image/x-icon" href="images/favicon.png" />
+	</head>
+	<body onload="loadUpdateConstraintsPage('systemUpdateDiv')">
+		<div class="bannerHeader">
+			<img src="images/GT_image.png" alt="GT Header Image" height="100" width="200"/>
+			<img src="images/ARMS_header.png" alt="ARMS Header Image" height="100" width="600" align="right"/>
+		</div>
+		<div class="bannerHeaderGold">
+			<div class="greeting" align="right">
+				<span>Welcome, Student 12345!</span>
+				<a class="logout" href="alogin.html" style="color:#FFFFFF">Logout</a>
+			</div>
+		</div>
+		<div class="page-content">
+			<div class="sidebar">
+				<div id="catalogDiv" class=sidebarElement><a href="catalog.html" style="color:#FFFFFF">View Catalog</a></div>
+				<div id="studentSearchDiv" class=sidebarElement><a href="studentsearch.html" style="color:#FFFFFF">Student Search</a></div>
+				<div id="systemUpdateDiv" class=sidebarElement><a href="systemupdate.html" style="color:#FFFFFF">Update System Settings</a></div>
+				<div id="requestHistoryDiv" class=sidebarElement><a href="totalrequesthistory.html" style="color:#FFFFFF">View Request History</a></div>
+				<div id="summaryReportDiv" class=sidebarElement><a href="summary.html" style="color:#FFFFFF">Generate Summary Report</a></div>
+			</div>
+			<div class="displayPanel">
+				<div class="container-fluid">
+					<div class="row">
+						<h1 class="text-center">Update System Settings</h1>
+					</div>
+					<div class="row">
+						<div class="text-center">
+							<p>Below are the available system settings that can be edited.</p><br/>
+						</div>
+					</div>
+					<div id="contraintsFormDiv">
+						<form id="contraintsForm">
+							<div class="row">
+								<div class="form-group">
+									<div class="col-md-3 pull-left">
+										<label id="maxCoursesLabel">Max # of Courses Per Semester:&nbsp;</label>
+									</div>
+									<div class="col-md-2 pull-left">
+										<input class="form-control" id="maxCourses" type="text"/>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="form-group">
+									<div class="col-md-3 pull-left">
+										<label id="maxSemestersLabel">Max # of Semesters:&nbsp;</label>
+									</div>
+									<div class="col-md-2">
+										<input class="form-control" id="maxSemesters" type="text"/>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="form-group">
+									<div class="col-md-3 pull-left">
+										<label id="maxStudentsPerCourseLabel">Max # of Students Per Course:&nbsp;</label>
+									</div>
+									<div class="col-md-2">
+										<input class="form-control" id="maxStudentsPerCourse" type="text"/>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="form-group">
+									<div class="col-md-3 pull-left">
+										<button class="btn btn-primary" id="updateConstraints" type="button" form="contraintsForm" onclick="scheduleRequest()">UpdateSettings</button>
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!--<div class="footer">
+			<div class="bannerGrey"></div>
+			<div class="bannerGold"></div>
+		</div>-->
+
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+		<script src="js/bootstrap.min.js"></script>
+		<script src="js/updateconstraints.js"></script>
+		<script src="js/common.js"></script>
+
+	</body>
+</html>
