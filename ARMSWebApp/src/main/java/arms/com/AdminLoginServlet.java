@@ -20,7 +20,12 @@ public class AdminLoginServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request,
             HttpServletResponse response) throws ServletException, IOException {
     	
-    	int userId = Integer.parseInt(request.getParameter("userId"));
+    	int userId;
+    	try {
+    		userId = Integer.parseInt(request.getParameter("userId"));
+    	} catch (Exception e) {
+    		userId = -1;
+    	}
     	
     	// TODO: Validate user id in the DB
     	if(userId != 2) {
