@@ -35,7 +35,16 @@
 						<c:forEach var="entry" items="${schedule}">
 							<tr>
 								<td>${entry.key}</td>
-								<td>${entry.value}</td>
+								<td>
+									<c:choose>
+										<c:when test="${entry.value == -1}">
+											Unavailable
+										</c:when>
+										<c:otherwise>
+											${entry.valye}
+										</c:otherwise>
+									</c:choose>
+								</td>
 							</tr>
 						</c:forEach>
 					</table>
