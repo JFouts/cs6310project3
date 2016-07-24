@@ -680,7 +680,18 @@ public class ARMDatabase {
     		throw new Exception(e);
     	}
 	}
-    
+	
+	public void updateGlobalParams(int maxSemesters, int maxClasses, int maxStudents) throws Exception {
+		String sql = "UPDATE global_constraint SET max_semesters = ?, max_classes = ?, max_students = ?;";
+		PreparedStatement statement = conn.prepareStatement(sql);
+		
+		statement.setInt(1, maxSemesters);
+		statement.setInt(2, maxClasses);
+		statement.setInt(3, maxStudents);
+		
+		statement.executeUpdate();
+	}
+	    
     /*******************GUROBI METHODS************************/
 	
 	public int getStudentCount() throws Exception{

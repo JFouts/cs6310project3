@@ -28,14 +28,14 @@
 						</div>
 					</div>
 					<div id="contraintsFormDiv">
-						<form id="contraintsForm" action="Constraints" method="POST">
+						<form id="contraintsForm" action="Constraints?userId=${userId}" method="POST">
 							<div class="row">
 								<div class="form-group">
 									<div class="col-md-3 pull-left">
 										<label id="maxCoursesLabel">Max # of Courses Per Semester:&nbsp;</label>
 									</div>
 									<div class="col-md-2 pull-left">
-										<input class="form-control" id="maxCourses" type="text" value="${constraintValuesMap['maxCourses']}"/>
+										<input class="form-control" id="maxCourses" type="text" name="maxCourses" value="${constraintValuesMap['maxCourses']}"/>
 									</div>
 								</div>
 							</div>
@@ -45,7 +45,7 @@
 										<label id="maxSemestersLabel">Max # of Semesters:&nbsp;</label>
 									</div>
 									<div class="col-md-2">
-										<input class="form-control" id="maxSemesters" type="text" value="${constraintValuesMap['maxSemesters']}"/>
+										<input class="form-control" id="maxSemesters" type="text" name="maxSemesters" value="${constraintValuesMap['maxSemesters']}"/>
 									</div>
 								</div>
 							</div>
@@ -55,7 +55,7 @@
 										<label id="maxStudentsPerCourseLabel">Max # of Students Per Course:&nbsp;</label>
 									</div>
 									<div class="col-md-2">
-										<input class="form-control" id="maxStudentsPerCourse" type="text" value="${constraintValuesMap['maxStudentsPerCourse']}"/>
+										<input class="form-control" id="maxStudentsPerCourse" type="text" name="maxStudentsPerCourse" value="${constraintValuesMap['maxStudentsPerCourse']}"/>
 									</div>
 								</div>
 							</div>
