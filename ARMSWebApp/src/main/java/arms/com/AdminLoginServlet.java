@@ -7,6 +7,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import arms.db.ARMDatabase;
+import arms.db.Administrator;
+import arms.db.Student;
+
 public class AdminLoginServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
     
@@ -27,14 +31,21 @@ public class AdminLoginServlet extends HttpServlet {
     		userId = -1;
     	}
     	
-    	// TODO: Validate user id in the DB
-    	if(userId != 2) {
+		ARMDatabase api = ARMDatabase.getDatabase();
+    	Administrator admin = null;
+		try {
+			admin = api.getAdmin(userId);
+		} catch (Exception e) {
+			request.setAttribute("error", e.toString());
+			e.printStackTrace();
+			request.getRequestDispatcher("WEB-INF/Error.jsp").forward(request, response);
+			return;
+		}
+		if(admin != null && admin.getAdminId() >= 0) {
+			response.sendRedirect("AdminDashboard?userId=" + userId);
+		} else {
     		request.setAttribute("loginFailed", true);
-    		request.getRequestDispatcher("WEB-INF/AdminLogin.jsp").forward(request, response);
-    	}
-    	else
-    	{
-    		response.sendRedirect("AdminDashboard?userId=" + userId);
-    	}
+    		request.getRequestDispatcher("WEB-INF/AdminLogin.jsp").forward(request, response);						
+		}
     }
 }

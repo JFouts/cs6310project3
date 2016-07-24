@@ -6,9 +6,11 @@ import java.util.Map;
 
 public class Administrator {
 	private static ARMDatabase db;
+	private int adminId;
 	
-	public Administrator(){
+	public Administrator(int id){
 		db = ARMDatabase.getDatabase();
+		this.adminId=id;
 	}
 	
 	public Student registerStudent(){
@@ -36,5 +38,9 @@ public class Administrator {
 		//ArrayList<Integer> coursesWithPrereqs = addAllPrereqs(courses);
 		
 		
+	}
+
+	public int getAdminId() {
+		return adminId;
 	}
 }

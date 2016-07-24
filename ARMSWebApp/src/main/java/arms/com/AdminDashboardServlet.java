@@ -2,6 +2,7 @@ package arms.com;
 
 import java.io.IOException;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -14,7 +15,7 @@ public class AdminDashboardServlet extends ARMSServlet {
             HttpServletResponse response) throws ServletException, IOException {
     	
     	super.doGet(request, response);
-    	
-		request.getRequestDispatcher("WEB-INF/AdminDashboard.jsp").forward(request, response);
+    	RequestDispatcher dispatcher = request.getRequestDispatcher("WEB-INF/AdminDashboard.jsp");
+    	dispatcher.forward(request, response);
     }
 }

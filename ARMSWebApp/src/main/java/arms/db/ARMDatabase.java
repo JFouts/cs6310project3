@@ -86,6 +86,29 @@ public class ARMDatabase {
     	}
     }
     
+    public Administrator getAdmin(int adminId) throws Exception{
+		try {
+			String sql = "SELECT * FROM administrator WHERE admin_id = ?;";
+			PreparedStatement statement = conn.prepareStatement(sql);
+
+			statement.setInt(1, adminId);
+			ResultSet rs = statement.executeQuery();
+		
+			int id = -1;
+			//STEP 5: Extract data from result set
+			while(rs.next()){
+				//Retrieve by column name
+				id = rs.getInt("admin_id");			
+			}
+			rs.close();
+			
+			return new Administrator(id);
+		} catch (SQLException e){
+			throw new Exception(e);
+		}
+		
+    }
+    
     public Student getStudent(int studentId) throws Exception{
     		//STEP 4: Execute a query
     		//System.out.println("Creating statement...");
