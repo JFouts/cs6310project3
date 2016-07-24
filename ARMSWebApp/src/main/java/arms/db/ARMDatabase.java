@@ -908,4 +908,33 @@ public class ARMDatabase {
 	    		throw new Exception(e);
 	    	}
 	}
+	
+	public ArrayList<Integer> getStudentRequestPriority() throws Exception{
+		try{
+	    	 stmt = conn.createStatement();
+	    	 String sql = "SELECT student_id "+
+	    			 	"FROM student_request " +
+	    			 	"WHERE request_id IN (SELECT MAX(request_id) " +
+											"FROM student_request " +
+											"GROUP BY student_id) " +
+						"ORDER BY timestamp ASC;";
+	    	
+	    	 ResultSet rs = stmt.executeQuery(sql);
+	    	    
+	    	 ArrayList<Integer> studentPriority = new ArrayList<Integer>();
+	    	    
+	    	 while(rs.next()){
+	    	         //Retrieve by column name
+	    		 int id = rs.getInt("student_id");
+	    		 studentPriority.add(id);
+	    	 }
+	    	 
+	    	      
+	    	 rs.close();
+	    	 return studentPriority;
+	    	 
+		} catch (SQLException e){
+    		throw new Exception(e);
+    	}
+	}
 }
