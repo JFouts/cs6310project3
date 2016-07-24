@@ -66,7 +66,7 @@ public class ComputationalEngine {
 			for(int k=0; k<numSemesters;k++){
 				for(int j=0; j<numCourses; j++){
 					for(int i=0; i<numStudents; i++){
-						objFuncConstraint.addTerm(1, Yijk[i][j][k]);
+						objFuncConstraint.addTerm(numSemesters-k, Yijk[i][j][k]);
 					}
 					//String cname = "OBJFUNC_Semester"+k+"_Course"+j;
 					//model.addConstr(objFuncConstraint, GRB.LESS_EQUAL, X, cname);
@@ -84,12 +84,13 @@ public class ComputationalEngine {
 		// semester constraint already imposed
 		try {
 		// max courses per semester per student
-		if(db.getMaxCoursesPerSemester() != -1){	
+		if(db.getMaxCoursesPerSemester() != 0){	
 			maxCourseConstraint();
 		}
 		
 		// set prereq constraints for all courses
-		prereqConstraint();
+		prereqBeforeCourseConstraint();
+		forcePrereqConstraint();
 		
 		// max students per course per semester (if class has a max)
 		maxStudentConstraint(); 
@@ -100,6 +101,9 @@ public class ComputationalEngine {
 
 		// semesters available
 		courseAvailabilityConstraint();
+		
+		// do not take course multiple times
+		onlyTakeCourseOnceConstraint();
 				
 		} catch(Exception e){
 			e.printStackTrace();
@@ -127,7 +131,7 @@ public class ComputationalEngine {
 		}
 	}
 	
-	private void prereqConstraint() throws Exception{
+	private void prereqBeforeCourseConstraint() throws Exception{
 		try{
 			for(int i=0; i<numStudents; i++){
 				Student s = Student.get(i+902448900);
@@ -160,6 +164,40 @@ public class ComputationalEngine {
 			}
 		}
 	
+	private void forcePrereqConstraint() throws Exception{
+		try{
+			for(int i=0; i<numStudents; i++){
+				Student s = Student.get(i+902448900);
+				for(int j=0; j<numCourses; j++){
+					Course c = db.getCourse(j+1);
+						// only add prereq constraints if student taking class
+						// and prereq exists
+						if(s.getRequestedCourses().contains(j+1)){
+							ArrayList<Integer> prereqs = db.getPrereqs(j+1);
+							if(prereqs.size() > 0){
+								for(int preJ=0; preJ <prereqs.size(); preJ++){
+									GRBLinExpr leftPrereqConstraint = new GRBLinExpr();
+									GRBLinExpr rightCourseExpr = new GRBLinExpr();
+									int prereqIndex = prereqs.get(preJ)-1;
+									for(int k=0; k<numSemesters;k++){
+										leftPrereqConstraint.addTerm(1, Yijk[i][prereqIndex][k]);
+										rightCourseExpr.addTerm(1, Yijk[i][j][k]);
+									}
+									//leftPrereqConstraint.addConstant(2);
+									String cname = "PREREQFORCE_Student"+i+"_Course"+j+"_Prereq"+prereqIndex;
+									model.addConstr(leftPrereqConstraint, GRB.GREATER_EQUAL,rightCourseExpr, cname);
+								}
+							}
+								
+						}
+					}
+				}
+			}catch(GRBException e){
+				e.printStackTrace();
+			}
+		}
+	
+	
 	public void maxStudentConstraint() throws Exception{
 		// max students per course per semester kji
 		
@@ -167,7 +205,7 @@ public class ComputationalEngine {
 			for(int k=0; k<numSemesters;k++){
 				for(int j=0; j<numCourses; j++){
 					Course c = db.getCourse(j+1);
-					if(c.getMaxSize() != -1 || db.getMaxStudentsPerCourse() != -1){
+					if(c.getMaxSize() != -1 || db.getMaxStudentsPerCourse() != 0){
 						// assign max students from course or globals
 						int maxStudents = c.getMaxSize();
 						if(maxStudents == -1)
@@ -236,6 +274,19 @@ public class ComputationalEngine {
 		}
 	}
 	
+	public void onlyTakeCourseOnceConstraint() throws Exception{
+		for(int i=0; i<numStudents; i++){
+			for(int j=0;j<numCourses;j++){
+				GRBLinExpr courseTakeOnceConstraint = new GRBLinExpr();
+				for(int k=0; k<numSemesters;k++){
+					courseTakeOnceConstraint.addTerm(1, Yijk[i][j][k]);
+				}
+				String cname = "TAKEONCE_Student"+i+"_Course"+j;
+				model.addConstr(courseTakeOnceConstraint, GRB.LESS_EQUAL, 1, cname);
+			}
+		}
+	}
+	
 	
 	
 	public void runModel(){
@@ -244,13 +295,21 @@ public class ComputationalEngine {
 			
 			//GRBExpr obj = model.getObjective();
 			
+			int status = model.get(GRB.IntAttr.Status);
+			
 			double[][][] x = model.get(GRB.DoubleAttr.X, Yijk);
-			for(int k=0; k<numSemesters;k++){
-				for(int j=0; j<numCourses; j++){
-					for(int i=0; i<numStudents; i++){
-						System.out.print(x[i][j][k]);
+			
+			
+			for(int i=0; i<numStudents; i++){
+				int id = 902448900+i;
+				System.out.println("Student: "+ id);
+				for(int k=0; k<numSemesters;k++){
+					for(int j=0; j<numCourses; j++){
+						System.out.print(x[i][j][k] + ",");
 					}
+					System.out.println();
 				}
+				System.out.println();
 			}
 			
 			//GRBModel w =  model.fixedModel();
