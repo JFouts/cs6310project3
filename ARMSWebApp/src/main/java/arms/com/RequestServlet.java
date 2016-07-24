@@ -38,18 +38,18 @@ public class RequestServlet extends HttpServlet {
     		request.setAttribute("shadowId", shadowUserId);
     	}
     	
-    	// TODO: get the course list for this user from the database
     	ARMDatabase api = ARMDatabase.getDatabase();
+    	
     	List<Course> courseList;
 		try {
 			courseList = api.getCatalog();
-			request.setAttribute("courseList", courseList);
 		} catch (Exception e) {
 			request.setAttribute("error", e.toString());
 			e.printStackTrace();
 			request.getRequestDispatcher("WEB-INF/Error.jsp").forward(request, response);
 			return;
 		}
+		request.setAttribute("courseList", courseList);
     	
     	Map<Integer, String> courses = new HashMap<Integer, String>(); 
         for (Course c: courseList)
@@ -66,32 +66,32 @@ public class RequestServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request,
     		HttpServletResponse response) throws ServletException, IOException {
-    	  	    	
-    	Map<String, Integer> schedule = new HashMap<String, Integer>();
-    	String[] courseStrs = request.getParameterValues("course");
-    	ArrayList<Integer> courseIds = new ArrayList<Integer>();
-    	ARMDatabase api = ARMDatabase.getDatabase();
     	
     	request.setAttribute("mode", "output");
     	
     	int userId = Integer.parseInt(request.getParameter("userId"));
     	request.setAttribute("userId", userId);
     	
-    	for (String s: courseStrs) {
+    	String[] courseStrs = request.getParameterValues("course");
+    	ArrayList<Integer> courseIds = new ArrayList<Integer>();
+    	for (String s: courseStrs)
     		courseIds.add(Integer.parseInt(s));
-    	}
     	
     	String shadowId = request.getParameter("shadowId");
-    	if (shadowId!=null && !shadowId.isEmpty()) {
+    	
+    	StudentRequest sr;
+    	Map<String, Integer> schedule = new HashMap<String, Integer>();
+    	
+    	ARMDatabase api = ARMDatabase.getDatabase();
+    	
+    	if (shadowId != null && !shadowId.isEmpty()) {
         	int shadowUserId = Integer.parseInt(shadowId);
     		request.setAttribute("shadowId", shadowUserId);
     		try {
 				Administrator admin = Administrator.get(userId);
 				Map<Integer,Integer> shadowSchedule = admin.shadowRequest(courseIds,shadowUserId);
-				for (Integer courseID : shadowSchedule.keySet()) {
-					Course c = api.getCourse(courseID.intValue());
-					schedule.put(c.getName(), shadowSchedule.get(courseID));
-				}
+				for (Integer courseID : shadowSchedule.keySet())
+					schedule.put(api.getCourse(courseID).getName(), shadowSchedule.get(courseID));
 			} catch (Exception e) {
 				request.setAttribute("error", e.toString());
 				e.printStackTrace();
@@ -99,45 +99,21 @@ public class RequestServlet extends HttpServlet {
 				return;
 			}
     	} else {	    	
-	    	// TODO: get schedule from database by passing in courseIds and userId		
-			for (int c: courseIds)
-				schedule.put(null, 1);
+    		Student student = null;
+        	try {
+    			student = api.getStudent(userId);
+    			sr = student.scheduleRequest(courseIds);
+    			for (Integer courseId : sr.getSchedule().keySet())
+    				schedule.put(api.getCourse(courseId).getName(), sr.getSchedule().get(courseId));
+    		} catch (Exception e) {
+    			request.setAttribute("error", e.toString());
+    			e.printStackTrace();
+    			request.getRequestDispatcher("WEB-INF/Error.jsp").forward(request, response);
+    			return;
+    		}
+    		request.setAttribute("schedule", schedule);
     	}
     	
-		request.setAttribute("schedule", schedule);
-    	
-    	List<Course> courseList;
-		try {
-			courseList = api.getCatalog();
-			request.setAttribute("courseList", courseList);
-		} catch (Exception e) {
-			request.setAttribute("error", e.toString());
-			e.printStackTrace();
-			request.getRequestDispatcher("WEB-INF/Error.jsp").forward(request, response);
-			return;
-		}
-    			
-		Student student = null;
-    	try {
-			student = api.getStudent(userId);
-		} catch (Exception e) {
-			request.setAttribute("error", e.toString());
-			e.printStackTrace();
-			request.getRequestDispatcher("WEB-INF/Error.jsp").forward(request, response);
-			return;
-		}
-		
-    	StudentRequest sr;
-		try {
-			sr = student.scheduleRequest(courseIds);
-		} catch (Exception e) {
-			e.printStackTrace();
-			request.setAttribute("error", e);
-			request.getRequestDispatcher("WEB-INF/Error.jsp").forward(request, response);
-			return;
-		}
-		
-
-    	request.getRequestDispatcher("WEB-INF/Request.jsp").forward(request, response);
+		request.getRequestDispatcher("WEB-INF/Request.jsp").forward(request, response);
     }
 }
