@@ -89,7 +89,6 @@ public class RequestHistoryServlet extends ARMSServlet {
     			new TempStudentRequest(1, new Date(), schedule),
     	};
     	
-    	
     	request.setAttribute("requestList", requestList);
     	
 		request.getRequestDispatcher("WEB-INF/RequestHistory.jsp").forward(request, response);
