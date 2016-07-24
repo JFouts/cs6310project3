@@ -19,7 +19,7 @@ public class Administrator {
 		db.deleteStudent(id);
 	}
 	
-	public ArrayList<String> viewCatalog() throws Exception{
+	public ArrayList<Course> viewCatalog() throws Exception{
 		return db.getCatalog();
 	}
 	

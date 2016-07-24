@@ -13,6 +13,14 @@ public class Course {
 	int maxSize;
 	int demand = 0;
 	
+	public Course(int id, String name){
+		this.id = id;
+		this.name = name;
+		
+		prereqs = new ArrayList<Integer>();
+		availability = new ArrayList<Integer>();
+	}
+	
 	public Course(int id, String name, int maxSize){
 		this.id = id;
 		this.name = name;
