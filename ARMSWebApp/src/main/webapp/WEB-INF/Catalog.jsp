@@ -30,7 +30,7 @@
                 </c:forEach>
             </table>
             <div class="text-center">
-                <a class="btn btn-default" href="sdashboard.html" role="button">Back to Dashboard</a>
+                <a class="btn btn-default" href="StudentDashboard?userId=${userId}" role="button">Back to Dashboard</a>
             </div>
         </div>
     </div>
