@@ -24,4 +24,12 @@ public class StudentRequest {
 	public void setSchedule(Map<Integer,Integer> sched){
 		schedule = sched;
 	}
+	
+	public java.sql.Timestamp getTimestamp() {
+		return timestamp;
+	}
+	
+	public Map<Integer, Integer> getSchedule() {
+		return schedule;
+	}
 }

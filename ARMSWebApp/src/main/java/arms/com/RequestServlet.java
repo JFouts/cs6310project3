@@ -1,8 +1,10 @@
 package arms.com;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -13,6 +15,8 @@ import javax.servlet.http.HttpServletResponse;
 import arms.db.ARMDatabase;
 import arms.db.Administrator;
 import arms.db.Course;
+import arms.db.Student;
+import arms.db.StudentRequest;
 
 public class RequestServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
@@ -27,7 +31,7 @@ public class RequestServlet extends HttpServlet {
     	
     	int userId = Integer.parseInt(request.getParameter("userId"));
     	request.setAttribute("userId", userId);
-    	
+
     	String shadowId = request.getParameter("shadowId");
     	if (shadowId!=null && !shadowId.isEmpty()) {
         	int shadowUserId = Integer.parseInt(shadowId);
@@ -35,24 +39,21 @@ public class RequestServlet extends HttpServlet {
     	}
     	
     	// TODO: get the course list for this user from the database
+    	ARMDatabase api = ARMDatabase.getDatabase();
+    	List<Course> courseList;
+		try {
+			courseList = api.getCatalog();
+			request.setAttribute("courseList", courseList);
+		} catch (Exception e) {
+			request.setAttribute("error", e.toString());
+			e.printStackTrace();
+			request.getRequestDispatcher("WEB-INF/Error.jsp").forward(request, response);
+			return;
+		}
+    	
     	Map<Integer, String> courses = new HashMap<Integer, String>(); 
-        courses.put(1, "6210 - Advanced Operating Systems");
-		courses.put(2, "6250 - Computer Networks");
-		courses.put(3, "6262 - Network Security");
-		courses.put(4, "6290 - High Performance Computer Architecture");
-		courses.put(5, "6300 - Software Development Process");
-		courses.put(6, "6310 - Software Architecture & Design");
-		courses.put(7, "6340 - Software Analysis & Test");
-		courses.put(8, "6400 - Database Systems Concepts & Design");
-		courses.put(9, "6440 - Intro Health Informatics");
-		courses.put(10, "6460 - Education Tech-Foundations");
-		courses.put(11, "6475 - Computational Photography");
-		courses.put(12, "6476 - Computer Vision");
-		courses.put(13, "6505 - Computability & Algorithms");
-		courses.put(14, "6601 - Artificial Intelligence");
-		courses.put(15, "7637 - Knowledge-Based AI");
-		courses.put(16, "7641 - Machine Learning");
-		courses.put(17, "7646 - Machine Learning For Trading");
+        for (Course c: courseList)
+        	courses.put(c.getId(), c.getName());
 		
 		request.setAttribute("courses", courses);
     	
@@ -105,26 +106,38 @@ public class RequestServlet extends HttpServlet {
     	
 		request.setAttribute("schedule", schedule);
     	
-    	Map<Integer, String> courses = new HashMap<Integer, String>(); 
-        courses.put(1, "6210 - Advanced Operating Systems");
-		courses.put(2, "6250 - Computer Networks");
-		courses.put(3, "6262 - Network Security");
-		courses.put(4, "6290 - High Performance Computer Architecture");
-		courses.put(5, "6300 - Software Development Process");
-		courses.put(6, "6310 - Software Architecture & Design");
-		courses.put(7, "6340 - Software Analysis & Test");
-		courses.put(8, "6400 - Database Systems Concepts & Design");
-		courses.put(9, "6440 - Intro Health Informatics");
-		courses.put(10, "6460 - Education Tech-Foundations");
-		courses.put(11, "6475 - Computational Photography");
-		courses.put(12, "6476 - Computer Vision");
-		courses.put(13, "6505 - Computability & Algorithms");
-		courses.put(14, "6601 - Artificial Intelligence");
-		courses.put(15, "7637 - Knowledge-Based AI");
-		courses.put(16, "7641 - Machine Learning");
-		courses.put(17, "7646 - Machine Learning For Trading");
-		request.setAttribute("courses", courses);
-    	
-		request.getRequestDispatcher("WEB-INF/Request.jsp").forward(request, response);
+    	List<Course> courseList;
+		try {
+			courseList = api.getCatalog();
+			request.setAttribute("courseList", courseList);
+		} catch (Exception e) {
+			request.setAttribute("error", e.toString());
+			e.printStackTrace();
+			request.getRequestDispatcher("WEB-INF/Error.jsp").forward(request, response);
+			return;
+		}
+    			
+		Student student = null;
+    	try {
+			student = api.getStudent(userId);
+		} catch (Exception e) {
+			request.setAttribute("error", e.toString());
+			e.printStackTrace();
+			request.getRequestDispatcher("WEB-INF/Error.jsp").forward(request, response);
+			return;
+		}
+		
+    	StudentRequest sr;
+		try {
+			sr = student.scheduleRequest(courseIds);
+		} catch (Exception e) {
+			e.printStackTrace();
+			request.setAttribute("error", e);
+			request.getRequestDispatcher("WEB-INF/Error.jsp").forward(request, response);
+			return;
+		}
+		
+
+    	request.getRequestDispatcher("WEB-INF/Request.jsp").forward(request, response);
     }
 }
