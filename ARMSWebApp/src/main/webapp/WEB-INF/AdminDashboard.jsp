@@ -12,9 +12,11 @@
 <div class="page-content">
 <%@ include file="Sidebar.jsp" %>
   <div class="displayPanel">
-    <div class="displayPanelCentered">
-      <img src="/ARMSWebApp/resources/images/bee.png" alt="Bee Landing Image" height="70%" width="50%" vertical-align="middle"/>
-    </div>
+     <img class="bee" src="/ARMSWebApp/resources/images/bee.png" alt="The Bee!">
+	<span class="bubble">
+		Congratulations, you remembered your Admin ID.
+		Welcome to ARMS!
+	</span>
   </div>
 </div>
     <%@ include file="Footer.jsp" %>
