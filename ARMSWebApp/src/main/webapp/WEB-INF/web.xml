@@ -11,15 +11,6 @@
     version="2.5">
     
   <display-name>Archetype Created Web Application</display-name>
-  
-        <servlet>
-                <servlet-name>LandingPage</servlet-name>
-                <servlet-class>arms.com.LandingPageServlet</servlet-class>
-        </servlet>
-        <servlet-mapping>
-                <servlet-name>LandingPage</servlet-name>
-                <url-pattern>/LandingPage</url-pattern>
-        </servlet-mapping>
 
         <servlet>
                 <servlet-name>Course</servlet-name>
@@ -66,15 +57,6 @@
                 <url-pattern>/Constraints</url-pattern>
         </servlet-mapping>
         
-        <servlet>
-                <servlet-name>RegisterStudent</servlet-name>
-                <servlet-class>arms.com.RegisterStudentServlet</servlet-class>
-        </servlet>
-        <servlet-mapping>
-                <servlet-name>RegisterStudent</servlet-name>
-                <url-pattern>/RegisterStudent</url-pattern>
-        </servlet-mapping>
-                
         <servlet>
                 <servlet-name>RequestHistory</servlet-name>
                 <servlet-class>arms.com.RequestHistoryServlet</servlet-class>
