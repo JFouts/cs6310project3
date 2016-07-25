@@ -11,11 +11,13 @@ import arms.db.ARMDatabase;
 import arms.db.Administrator;
 import arms.db.Student;
 
-public class AdminLoginServlet extends HttpServlet {
+public class AdminLoginServlet extends ARMSServlet {
     private static final long serialVersionUID = 1L;
     
     protected void doGet(HttpServletRequest request,
             HttpServletResponse response) throws ServletException, IOException {
+    	
+    	super.doGet(request, response);
     	
     	request.setAttribute("loginFailed", false);
 		request.getRequestDispatcher("WEB-INF/AdminLogin.jsp").forward(request, response);
