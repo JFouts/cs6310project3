@@ -13,7 +13,7 @@ Step 1 - Build the WAR (Hotkey: Shift+Alt+X M)
 
 Step 2 - Deploy the WAR
 	From Terminal
-	cd ~/workspace/ARMSWebApp
+	cd ~/Project3/cs6310project3/ARMSWebApp/
 	sudo ./deploy.sh
 
 # Testing
