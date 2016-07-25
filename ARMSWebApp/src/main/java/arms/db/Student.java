@@ -22,6 +22,7 @@ public class Student {
 	public Student(int id, int hours){
 		this.studentId = id;
 		this.takenHours = hours;
+		db = ARMDatabase.getDatabase();
 	}
 	
 	public static Student get(int id) throws Exception{

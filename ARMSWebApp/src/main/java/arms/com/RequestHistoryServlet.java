@@ -39,10 +39,7 @@ public class RequestHistoryServlet extends ARMSServlet {
 			for (Course c: api.getCatalog())
 				courses.put(c.getId(), c.getName());
 		} catch (Exception e) {
-			request.setAttribute("error", e.toString());
-			e.printStackTrace();
-			request.getRequestDispatcher("WEB-INF/Error.jsp").forward(request, response);
-			return;
+			throw new ServletException(e);
 		}
 		request.setAttribute("courses", courses);
     	
@@ -50,20 +47,14 @@ public class RequestHistoryServlet extends ARMSServlet {
     	try {
 			student = api.getStudent(userId);
 		} catch (Exception e) {
-			request.setAttribute("error", e.toString());
-			e.printStackTrace();
-			request.getRequestDispatcher("WEB-INF/Error.jsp").forward(request, response);
-			return;
+			throw new ServletException(e);
 		}
     	
     	List<StudentRequest> requestList;
 		try {
 			requestList = student.getRequestHistory();
 		} catch (Exception e) {
-			request.setAttribute("error", e.toString());
-			e.printStackTrace();
-			request.getRequestDispatcher("WEB-INF/Error.jsp").forward(request, response);
-			return;
+			throw new ServletException(e);
 		}
     	request.setAttribute("requestList", requestList);
     	

@@ -128,10 +128,7 @@ public class CourseServlet extends ARMSServlet {
     	try {
     		api.updateCourse(course);
 		} catch (Exception e) {
-			request.setAttribute("error", e.toString());
-			e.printStackTrace();
-			request.getRequestDispatcher("WEB-INF/Error.jsp").forward(request, response);
-			return;
+			throw new ServletException(e);
 		}
 
 		response.sendRedirect("Course?userId=" + userId + "&courseId=" + courseId);
