@@ -592,8 +592,8 @@ public class ARMDatabase {
 			SummaryReport.SummaryStudentRequest request = 
 					new SummaryReport.SummaryStudentRequest(
 							s.getStudentId(),
-							getStudentNextSemesterCount(s.getStudentId(), 0),
-							getStudentFutureSemesterCount(s.getStudentId(), 0),
+							getStudentNextSemesterCount(s.getStudentId(), 1),
+							getStudentFutureSemesterCount(s.getStudentId(), 1),
 							getStudentUnavilableCount(s.getStudentId())
 							);
 			report.addStudentRequest(request);
