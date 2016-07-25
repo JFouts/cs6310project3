@@ -494,10 +494,11 @@ public class ARMDatabase {
     public List<StudentRequest> getStudentRequestHistory(int studentId) throws Exception{
     	try{
 	    	String sql = 
-	    			"SELECT s.request_id, GROUP_CONCAT(s.semester_id) AS `semesters`, s.timestamp, GROUP_CONCAT(c.course_id) AS `courses` " +
+	    			"SELECT s.request_id, GROUP_CONCAT(sched.semester_id) AS `semesters`, s.timestamp, GROUP_CONCAT(c.course_id) AS `courses` " +
 					"FROM student_request AS `s`                                                                        " +
 					"  INNER JOIN request_course AS `r` on s.request_id = r.request_id                                " +
 					"  INNER JOIN course AS `c` ON c.course_id = r.course_id                                          " +
+					"  INNER JOIN schedule_course AS `sched` ON sched.schedule_id = s.request_id AND sched.course_id = c.course_id " +
 					"WHERE s.student_id = ?                                                                       " +
 					"GROUP BY s.request_id                                                                              " +
 					"ORDER BY s.request_id DESC;                                                                        ";
