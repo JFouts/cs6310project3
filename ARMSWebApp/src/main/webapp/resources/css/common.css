@@ -110,3 +110,47 @@ body {
 .logout {
 	margin-left: 10px;
 }
+
+.bee {
+	margin-top: 20px;
+	margin-left: 20px;
+}
+
+.bubble {
+    position: relative;
+    background: #FFFFCC;
+    border: 1px solid #FFCC00;
+    max-width:250px;
+    padding:10px;
+    font-family:arial;
+    margin:0 auto 0 -175px;
+    font-size:14px;
+    border-radius:6px;
+    padding: 30px 15px;
+
+}
+
+.bubble:after,
+.bubble:before {
+    right: 100%;
+    top: 50%;
+    border: solid transparent;
+    content: " ";
+    height: 0;
+    width: 0;
+    position: absolute;
+    pointer-events: none;
+}
+
+.bubble:after {
+    border-color: rgba(255, 255, 204, 0);
+    border-right-color: #FFFFCC;
+    border-width: 15px;
+    margin-top: -15px;
+}
+.bubble:before {
+    border-color: rgba(255, 204, 0, 0);
+    border-right-color: #FFCC00;
+    border-width: 16px;
+    margin-top: -16px;
+}

@@ -120,7 +120,7 @@ public class ComputationalEngine {
 		ArrayList<Integer> studentsInOrder = db.getStudentRequestPriority();
 		if(shadowMode){
 			if(studentsInOrder.contains(requestingStudentId)){
-				studentsInOrder.remove(requestingStudentId);
+				studentsInOrder.remove(studentsInOrder.indexOf(requestingStudentId));
 			}
 			studentsInOrder.add(requestingStudentId);
 		}
