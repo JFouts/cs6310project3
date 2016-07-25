@@ -10,8 +10,8 @@ public class Semester {
 		String[] terms = {"Spring", "Summer", "Fall"};
 		int startingYear = 2016;
 		int startingTermId = 2;
-		int termId = id % 3;
-		this.year = (id+startingTermId / 3) + startingYear;
+		int termId = (id-1) % 3;
+		this.year = ((id-1)+startingTermId / 3) + startingYear;
 		this.id = id;
 		this.term = terms[termId];
 	}

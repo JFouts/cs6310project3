@@ -61,7 +61,7 @@ public class CourseServlet extends ARMSServlet {
     		int availsLen = avails.size();
     		availableSemesters = new Semester[availsLen]; 
     		for(int i=0;i < availsLen;i++){
-    			availableSemesters[i] = new Semester(avails.get(i));
+    			availableSemesters[i] = new Semester(avails.get(i)+3);
     		}
     	}
     	
@@ -81,7 +81,7 @@ public class CourseServlet extends ARMSServlet {
     	
     	Semester[] allSemesters = new Semester[3];
     	for(int i=0;i<3;i++)
-    		allSemesters[i] = new Semester(i);    	
+    		allSemesters[i] = new Semester(i+3);    	
     	
     	int defaultMaxSize;
 		try {
@@ -117,7 +117,7 @@ public class CourseServlet extends ARMSServlet {
     	Course course = new Course(courseId, courseName, sizeLimit);
     	
     	for(int i=0;i<semestersList.length;i++) {
-    		course.addAvailability(Integer.parseInt(semestersList[i]));
+    		course.addAvailability(Integer.parseInt(semestersList[i])-3);
     	}
     	
     	for(int i=0;i<preqsList.length;i++) {

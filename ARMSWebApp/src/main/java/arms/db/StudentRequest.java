@@ -7,6 +7,7 @@ import java.util.Map;
 public class StudentRequest {
 	int studentId;
 	int requestId;
+	String courseNames;
 	java.sql.Timestamp timestamp;
 	ArrayList<Integer> courses;
 	Map<Integer, Integer> schedule;
@@ -61,4 +62,13 @@ public class StudentRequest {
 	public Map<Integer, Integer> getSchedule() {
 		return schedule;
 	}
+	
+	public String getCourseNames() {
+		return courseNames;
+	}
+
+	public void setCourseNames(String courseNames) {
+		this.courseNames = courseNames;
+	}
+
 }

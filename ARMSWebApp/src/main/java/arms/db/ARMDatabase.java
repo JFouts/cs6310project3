@@ -740,10 +740,14 @@ public class ARMDatabase {
 	}
 	
 	public List<StudentRequest> getAllStudentRequests() throws Exception {
-		String sql = "SELECT request_id, student_id, timestamp " +
-				"FROM student_request " + 
-				"ORDER BY request_id DESC;";
-		
+		String sql = 
+				"SELECT s.request_id, s.student_id, s.timestamp, GROUP_CONCAT(DISTINCT c.name) AS courses " +
+				"FROM student_request AS `s`                                                              " +
+				"  INNER JOIN request_course AS `r` on (s.request_id = r.request_id)                      " +
+				"  INNER JOIN course AS `c` ON (c.course_id = r.course_id)                                " +
+				"GROUP BY s.request_id                                                                    " +
+				"ORDER BY s.request_id DESC;                                                              ";
+				
 		PreparedStatement statement = conn.prepareStatement(sql);
 		
 	    ResultSet rs = statement.executeQuery();
@@ -753,6 +757,102 @@ public class ARMDatabase {
 	    	//Retrieve by column name
 	    	StudentRequest request = new StudentRequest(rs.getInt("request_id"),  rs.getTimestamp("timestamp"));
 	    	request.setStudentId(rs.getInt("student_id"));
+	    	request.setCourseNames(rs.getString("courses"));
+	    	
+	    	requests.add(request);
+	    }
+	  
+		rs.close();
+		return requests;
+	}
+
+	public List<StudentRequest> getAllStudentRequestsByCourse(int courseFilter) throws SQLException {
+		String sql = 
+				"SELECT s.request_id, s.student_id, s.timestamp, GROUP_CONCAT(DISTINCT c.name) AS courses " +
+				"FROM student_request AS `s`                                                              " +
+				"  INNER JOIN request_course AS `r` on (s.request_id = r.request_id)                      " +
+				"  INNER JOIN course AS `c` ON (c.course_id = r.course_id)                                " +
+				"WHERE r.request_id IN (SELECT request_id " +
+                       "FROM request_course " +
+                       "WHERE course_id = ?) " +
+				"GROUP BY s.request_id                                                                    " +
+				"ORDER BY s.request_id DESC;                                                              ";
+				
+		PreparedStatement statement = conn.prepareStatement(sql);
+
+		statement.setInt(1, courseFilter);
+	    ResultSet rs = statement.executeQuery();
+
+	    List<StudentRequest> requests = new ArrayList<StudentRequest>();
+	    while(rs.next()){
+	    	//Retrieve by column name
+	    	StudentRequest request = new StudentRequest(rs.getInt("request_id"),  rs.getTimestamp("timestamp"));
+	    	request.setStudentId(rs.getInt("student_id"));
+	    	request.setCourseNames(rs.getString("courses"));
+	    	
+	    	requests.add(request);
+	    }
+	  
+		rs.close();
+		return requests;
+	}
+
+	public List<StudentRequest> getAllStudentRequestsByStudent(int studentFilter) throws SQLException {
+		String sql = 
+				"SELECT s.request_id, s.student_id, s.timestamp, GROUP_CONCAT(DISTINCT c.name) AS courses " +
+				"FROM student_request AS `s`                                                              " +
+				"  INNER JOIN request_course AS `r` on (s.request_id = r.request_id)                      " +
+				"  INNER JOIN course AS `c` ON (c.course_id = r.course_id)                                " +
+				"WHERE s.student_id = ? "+
+				"GROUP BY s.request_id                                                                    " +
+				"ORDER BY s.request_id DESC;                                                              ";
+				
+		PreparedStatement statement = conn.prepareStatement(sql);
+		
+		statement.setInt(1, studentFilter);
+	    ResultSet rs = statement.executeQuery();
+
+	    List<StudentRequest> requests = new ArrayList<StudentRequest>();
+	    while(rs.next()){
+	    	//Retrieve by column name
+	    	StudentRequest request = new StudentRequest(rs.getInt("request_id"),  rs.getTimestamp("timestamp"));
+	    	request.setStudentId(rs.getInt("student_id"));
+	    	request.setCourseNames(rs.getString("courses"));
+	    	
+	    	requests.add(request);
+	    }
+	  
+		rs.close();
+		return requests;
+	}
+
+	public List<StudentRequest> getAllStudentRequestsByStudentCourse(
+			int studentFilter, int courseFilter) throws SQLException {
+		String sql = 
+				"SELECT s.request_id, s.student_id, s.timestamp, GROUP_CONCAT(DISTINCT c.name) AS courses " +
+				"FROM student_request AS `s`                                                              " +
+				"  INNER JOIN request_course AS `r` on (s.request_id = r.request_id)                      " +
+				"  INNER JOIN course AS `c` ON (c.course_id = r.course_id)                                " +
+				"WHERE r.request_id IN (SELECT request_id " +
+                "FROM request_course " +
+                "WHERE course_id = ?) " +
+				"AND s.student_id = ? "+
+				"GROUP BY s.request_id                                                                    " +
+				"ORDER BY s.request_id DESC;                                                              ";
+				
+		PreparedStatement statement = conn.prepareStatement(sql);
+		
+		statement.setInt(1, courseFilter);
+		statement.setInt(2, studentFilter);
+	    ResultSet rs = statement.executeQuery();
+
+	    List<StudentRequest> requests = new ArrayList<StudentRequest>();
+	    while(rs.next()){
+	    	//Retrieve by column name
+	    	StudentRequest request = new StudentRequest(rs.getInt("request_id"),  rs.getTimestamp("timestamp"));
+	    	request.setStudentId(rs.getInt("student_id"));
+	    	request.setCourseNames(rs.getString("courses"));
+	    	
 	    	requests.add(request);
 	    }
 	  

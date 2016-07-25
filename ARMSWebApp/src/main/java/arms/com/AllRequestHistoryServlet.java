@@ -44,9 +44,31 @@ public class AllRequestHistoryServlet extends ARMSServlet {
 			return;
 		}
     	
+    	String studentFilterString = request.getParameter("studentFilter");
+    	String courseFilterString = request.getParameter("courseFilter");
+    	
     	List<StudentRequest> requests = null;
     	try {
-    		requests = api.getAllStudentRequests();
+    		int studentFilter = -1;
+    		int courseFilter = -1;
+    		
+    		if(studentFilterString != null && !"".equals(studentFilterString)){
+    			studentFilter = Integer.parseInt(studentFilterString);
+    		}
+    		if(courseFilterString != null && !"".equals(courseFilterString)){
+    			courseFilter = Integer.parseInt(courseFilterString);
+    		}
+    		
+    		if(courseFilter == -1 && studentFilter == -1) {
+    			requests = api.getAllStudentRequests();
+    		} else if(courseFilter == -1) {
+    			requests = api.getAllStudentRequestsByStudent(studentFilter);		
+    		} else if(studentFilter == -1) {
+    			requests = api.getAllStudentRequestsByCourse(courseFilter);
+    		} else {
+    			requests = api.getAllStudentRequestsByStudentCourse(studentFilter, courseFilter);
+    		}
+    		
 		} catch (Exception e) {
 			request.setAttribute("error", e.toString());
 			e.printStackTrace();
