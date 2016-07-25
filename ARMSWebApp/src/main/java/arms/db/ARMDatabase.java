@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -490,6 +491,51 @@ public class ARMDatabase {
     	}
     }
     
+    public List<StudentRequest> getStudentRequestHistory(int studentId) throws Exception{
+    	try{
+	    	String sql = 
+	    			"SELECT s.request_id, GROUP_CONCAT(s.semester_id) AS semesters,s.timestamp, GROUP_CONCAT(c.course_id) AS courses " +
+					"FROM student_request AS 's'                                                                        " +
+					"  INNER JOIN request_course AS 'r' on (s.request_id = r.request_id)                                " +
+					"  INNER JOIN course AS 'c' ON (c.course_id = r.course_id)                                          " +
+					"WHERE s.student_id = some_id                                                                       " +
+					"GROUP BY s.request_id                                                                              " +
+					"ORDER BY s.request_id DESC;                                                                        ";
+	    	PreparedStatement statement = conn.prepareStatement(sql);
+	
+			statement.setInt(1, studentId);
+			ResultSet rs = statement.executeQuery();
+		
+			ArrayList<StudentRequest> requests = new ArrayList<StudentRequest>();
+			while(rs.next()){
+				//Retrieve by column name
+				int reqId = rs.getInt("request_id");
+				Timestamp ts = rs.getTimestamp("timestamp");
+				String courseStr = rs.getString("courses");
+				String semesterStr = rs.getString("semesters");
+				
+				StudentRequest sr = new StudentRequest(reqId, ts);
+				
+				String[] courses = courseStr.split(",");
+				String[] semesters = semesterStr.split(",");
+				
+				for(int i=0; i<courses.length; i++){
+					sr.addCourse(Integer.parseInt(courses[i]));
+				}
+				
+				Map<Integer, Integer> schedule = new HashMap<Integer, Integer>();
+				for(int i=0; i < semesters.length && i < courses.length;i++) {
+					schedule.put(sr.getCourses().get(i), Integer.parseInt(semesters[i]));
+				}
+				
+				requests.add(sr);
+	    	}
+			rs.close();
+			return requests;
+		} catch(SQLException e){
+			throw new Exception(e);
+		}
+    }
     
     public Map<Integer,Integer> getStudentSchedule(int studentId) throws Exception{
     	try{

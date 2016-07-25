@@ -48,13 +48,10 @@ public class RequestServlet extends HttpServlet {
 			e.printStackTrace();
 			request.getRequestDispatcher("WEB-INF/Error.jsp").forward(request, response);
 			return;
-		}
-		request.setAttribute("courseList", courseList);
-    	
+		}    	
     	Map<Integer, String> courses = new HashMap<Integer, String>(); 
         for (Course c: courseList)
         	courses.put(c.getId(), c.getName());
-		
 		request.setAttribute("courses", courses);
     	
 		request.getRequestDispatcher("WEB-INF/Request.jsp").forward(request, response);
@@ -79,10 +76,24 @@ public class RequestServlet extends HttpServlet {
     	
     	String shadowId = request.getParameter("shadowId");
     	
+    	ARMDatabase api = ARMDatabase.getDatabase();
+    	
+    	List<Course> courseList;
+		try {
+			courseList = api.getCatalog();
+		} catch (Exception e) {
+			request.setAttribute("error", e.toString());
+			e.printStackTrace();
+			request.getRequestDispatcher("WEB-INF/Error.jsp").forward(request, response);
+			return;
+		}    	
+    	Map<Integer, String> courses = new HashMap<Integer, String>(); 
+        for (Course c: courseList)
+        	courses.put(c.getId(), c.getName());
+		request.setAttribute("courses", courses);
+    	
     	StudentRequest sr;
     	Map<String, Integer> schedule = new HashMap<String, Integer>();
-    	
-    	ARMDatabase api = ARMDatabase.getDatabase();
     	
     	if (shadowId != null && !shadowId.isEmpty()) {
         	int shadowUserId = Integer.parseInt(shadowId);

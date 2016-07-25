@@ -28,32 +28,6 @@ function addCourseDropdown(selection) {
 	
 }
 
-var schedule = [
-				{"course": "6035 - Intro To Information Security",
-				 "semester": 1},
-				{"course":"6250 - Computer Networks",
-				 "semester": 1},
-				{"course":"Database Systems Concepts & Design",
-				 "semester": 2}
-			   ]
-
-function displaySchedule() {
-	var schedhtml = "<h3>Generated Schedule</h3>";
-	schedhtml += '<table class="table table-striped">';
-	schedhtml += "  <tr>";
-	schedhtml += "    <th>Course</th>";
-	schedhtml += "    <th>Semester</th>";
-	schedhtml += "  </tr>";
-	$.each(schedule, function(i, item) {
-		schedhtml += "  <tr>";
-		schedhtml += "    <td>" + item.course + "</td>";
-		schedhtml += "    <td>" + item.semester + "</td>";
-		schedhtml += "  </tr>";    
-	});
-	schedhtml += "</table>";
-	$(".schedule").html("<hr>" + schedhtml);
-}
-
 function validScheduleRequest() {
 	var requests = [];
 	var error = false;
