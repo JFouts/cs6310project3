@@ -6,7 +6,7 @@
 <html>
 <head>
 	<%@ include file="Header.jsp" %>
-	<link type="text/css" rel="stylesheet" href="css/shistory.css"/>
+	<link type="text/css" rel="stylesheet" href="/ARMSWebApp/resources/css/shistory.css"/>
 </head>
 <body>
     <%@ include file="Banner.jsp" %>

@@ -87,7 +87,7 @@ public class ComputationalEngine {
 		
 		// priority takes class earlier and is allotted classes before others
 		studentPriorityByTimeConstraint();
-		forcePriorityConstraint();
+		//forcePriorityConstraint();
 			
 		// max courses per semester per student
 		if(db.getMaxCoursesPerSemester() != 0){	
@@ -96,7 +96,7 @@ public class ComputationalEngine {
 		
 		// set prereq constraints for all courses
 		prereqBeforeCourseConstraint();
-		forcePrereqConstraint();
+		//forcePrereqConstraint();
 		
 		// max students per course per semester (if class has a max)
 		maxStudentConstraint(); 
@@ -139,11 +139,11 @@ public class ComputationalEngine {
 						int priorityStudId = s.getStudentId()-902448900;
 						int nonPriorStudId = studentsInOrder.get(iSub)-902448900;
 						for(int k=0; k<numSemesters;k++){
-							priorityStudentConstraint.addTerm(k+1, Yijk[priorityStudId][j][k]);
-							nonPriorityStudentExpr.addTerm(k+1, Yijk[nonPriorStudId][j][k]);
+							priorityStudentConstraint.addTerm((numSemesters-k), Yijk[priorityStudId][j][k]);
+							nonPriorityStudentExpr.addTerm((numSemesters-k), Yijk[nonPriorStudId][j][k]);
 						}
 						String cname = "PRIORITYFIRST_Student"+priorityStudId+"_Course"+j+"_NonPriorityStudent"+nonPriorStudId;
-						model.addConstr(priorityStudentConstraint, GRB.LESS_EQUAL,nonPriorityStudentExpr, cname);
+						model.addConstr(priorityStudentConstraint, GRB.GREATER_EQUAL,nonPriorityStudentExpr, cname);
 					}
 				}
 			}
@@ -151,7 +151,7 @@ public class ComputationalEngine {
 		
 	}
 	
-	public void forcePriorityConstraint() throws Exception{
+	/*public void forcePriorityConstraint() throws Exception{
 		ArrayList<Integer> studentsInOrder = db.getStudentRequestPriority();
 		if(shadowMode){
 			if(studentsInOrder.contains(requestingStudentId)){
@@ -184,7 +184,7 @@ public class ComputationalEngine {
 			}
 		}
 		
-	}
+	}*/
 	
 	public void maxCourseConstraint() throws Exception{
 		int maxCourses = db.getMaxCoursesPerSemester();
@@ -226,12 +226,12 @@ public class ComputationalEngine {
 									GRBLinExpr rightCourseExpr = new GRBLinExpr();
 									int prereqIndex = prereqs.get(preJ)-1;
 									for(int k=0; k<numSemesters;k++){
-										leftPrereqConstraint.addTerm(k+2, Yijk[i][prereqIndex][k]);
-										rightCourseExpr.addTerm(k+1, Yijk[i][j][k]);
+										leftPrereqConstraint.addTerm((numSemesters-k), Yijk[i][prereqIndex][k]);
+										rightCourseExpr.addTerm((numSemesters-k)+1, Yijk[i][j][k]);
 									}
 									//leftPrereqConstraint.addConstant(1);
 									String cname = "PREREQ_Student"+i+"_Course"+j+"_Prereq"+prereqIndex;
-									model.addConstr(leftPrereqConstraint, GRB.LESS_EQUAL,rightCourseExpr, cname);
+									model.addConstr(leftPrereqConstraint, GRB.GREATER_EQUAL,rightCourseExpr, cname);
 								}
 							}
 								
@@ -243,7 +243,7 @@ public class ComputationalEngine {
 			}
 		}
 	
-	private void forcePrereqConstraint() throws Exception{
+	/*private void forcePrereqConstraint() throws Exception{
 		try{
 			for(int i=0; i<numStudents; i++){
 				Student s = Student.get(i+902448900);
@@ -277,7 +277,7 @@ public class ComputationalEngine {
 			}catch(GRBException e){
 				e.printStackTrace();
 			}
-		}
+		}*/
 	
 	
 	public void maxStudentConstraint() throws Exception{
