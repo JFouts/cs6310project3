@@ -6,7 +6,7 @@
 <html>
 	<head>
 		<%@ include file="Header.jsp" %>
-		<link type="text/css" rel="stylesheet" href="css/studentsearch.css"/>
+		<link type="text/css" rel="stylesheet" href="/ARMSWebApp/resources/css/studentsearch.css"/>
 	</head>
 	<body onload="loadStudentSearchPage('studentSearchDiv')">
 		<%@ include file="Banner.jsp" %>

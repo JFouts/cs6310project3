@@ -1,8 +1,6 @@
 package arms.com;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -58,19 +56,16 @@ public class RequestHistoryServlet extends ARMSServlet {
 			return;
 		}
     	
-    	//TODO: Some db call here using student
-    	ArrayList<StudentRequest> requestList = new ArrayList<StudentRequest>();
-    	StudentRequest sr = new StudentRequest(1, new java.sql.Timestamp(9999));
-    	Map<Integer,Integer> srs = new HashMap<Integer,Integer>();
-    	srs.put(1, 1);
-    	srs.put(2, 1);
-    	srs.put(3, -1);
-    	sr.setSchedule(srs);
-    	requestList.add(sr);
-    	
+    	List<StudentRequest> requestList;
+		try {
+			requestList = student.getRequestHistory();
+		} catch (Exception e) {
+			request.setAttribute("error", e.toString());
+			e.printStackTrace();
+			request.getRequestDispatcher("WEB-INF/Error.jsp").forward(request, response);
+			return;
+		}
     	request.setAttribute("requestList", requestList);
-    	
-    	
     	
 		request.getRequestDispatcher("WEB-INF/RequestHistory.jsp").forward(request, response);
     }

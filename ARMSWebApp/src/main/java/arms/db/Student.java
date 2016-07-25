@@ -1,6 +1,7 @@
 package arms.db;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 
@@ -90,6 +91,10 @@ public class Student {
 	
 	public ArrayList<Integer> getRequestedCourses() throws Exception{
 		return db.getRequestedCourses(studentId);
+	}
+	
+	public List<StudentRequest> getRequestHistory() throws Exception {
+		return db.getStudentRequestHistory(studentId);
 	}
 
 	public int getStudentId() {

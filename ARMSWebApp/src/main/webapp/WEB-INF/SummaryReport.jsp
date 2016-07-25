@@ -6,7 +6,7 @@
 <html>
 	<head>
 		<%@ include file="Header.jsp" %>
-		<link type="text/css" rel="stylesheet" href="css/summary.css"/>	
+		<link type="text/css" rel="stylesheet" href="/ARMSWebApp/resources/css/summary.css"/>	
 	</head>
 	<body>
 		<%@ include file="Banner.jsp" %>
@@ -105,7 +105,7 @@
 		    </div>
 		</div>
 		<%@ include file="Footer.jsp" %>	
-		<script src="js/summary.js"></script>
+		<script src="/ARMSWebApp/resources/js/summary.js"></script>
 
 		</body>
 	</html>

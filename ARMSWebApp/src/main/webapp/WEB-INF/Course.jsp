@@ -112,6 +112,9 @@
                   <tr>
                     <th>Prerequisites</td>
                     <td>
+                    <c:if test="${fn:length(coursePrereqs) == 0}">
+                    	None</br>
+                    </c:if>
                     <c:forEach var="prereq" items="${coursePrereqs}">
                         ${prereq.name}</br> 
                     </c:forEach>
@@ -135,6 +138,17 @@
                         ${course.maxSize}
                     </c:otherwise>
                     </c:choose></td>
+                  </tr>
+                  <tr>
+                    <th>Estimated Seats Remaining</td>
+                    <c:choose>
+                    <c:when test="${course.maxSize=='-1'}">
+                        <td>${defaultMaxSize - course.demand}</td>
+                    </c:when>
+                    <c:otherwise>
+                        <td>${course.maxSize - course.demand}</td>
+                    </c:otherwise>
+                    </c:choose>                    
                   </tr>
                 </table>
                 <div class="text-center">

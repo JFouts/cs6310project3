@@ -5,7 +5,7 @@
 <html>
 	<head>
 		<%@ include file="Header.jsp" %>
-		<link type="text/css" rel="stylesheet" href="css/updateconstraints.css"/>
+		<link type="text/css" rel="stylesheet" href="/ARMSWebApp/resources/css/updateconstraints.css"/>
 	</head>
 	<body  onload="loadUpdateConstraintsPage('systemUpdateDiv')">
 		<%@ include file="Banner.jsp" %>

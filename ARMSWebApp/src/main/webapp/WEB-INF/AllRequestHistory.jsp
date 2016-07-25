@@ -6,7 +6,7 @@
 <html>
 	<head>
 		<%@ include file="Header.jsp" %>
-		<link type="text/css" rel="stylesheet" href="css/totalrequesthistory.css"/>	
+		<link type="text/css" rel="stylesheet" href="/ARMSWebApp/resources/css/totalrequesthistory.css"/>	
 	</head>
 	<body onload="loadTotalRequestsPage('requestHistoryDiv')">
 		<%@ include file="Banner.jsp" %>
@@ -51,7 +51,7 @@
 		    </div>
 		</div>
     	<%@ include file="Footer.jsp" %>
-		<script src="js/totalrequesthistory.js"></script>
+		<script src="/ARMSWebApp/resources/js/totalrequesthistory.js"></script>
 
 	</body>
 </html>
