@@ -56,6 +56,10 @@ public class RequestServlet extends ARMSServlet {
         	courses.put(c.getId(), c.getName());
 		request.setAttribute("courses", courses);
     	
+		if (shadowId!=null && !shadowId.isEmpty()) {
+			super.doGet(request, response);
+		}
+		
 		request.getRequestDispatcher("WEB-INF/Request.jsp").forward(request, response);
     }
     
@@ -118,9 +122,14 @@ public class RequestServlet extends ARMSServlet {
     		} catch (Exception e) {
 				throw new ServletException(e);
     		}
-    		request.setAttribute("schedule", schedule);
     	}
     	
-		request.getRequestDispatcher("WEB-INF/Request.jsp").forward(request, response);
+    	request.setAttribute("schedule", schedule);
+    	
+    	if (shadowId != null && !shadowId.isEmpty()) {
+    		request.getRequestDispatcher("WEB-INF/Request.jsp?userId=" + userId+"&?shadowId="+shadowId).forward(request, response);
+    	} else {
+    		request.getRequestDispatcher("WEB-INF/Request.jsp").forward(request, response);
+    	}
     }
 }
