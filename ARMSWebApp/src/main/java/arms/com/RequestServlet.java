@@ -18,7 +18,7 @@ import arms.db.Course;
 import arms.db.Student;
 import arms.db.StudentRequest;
 
-public class RequestServlet extends HttpServlet {
+public class RequestServlet extends ARMSServlet {
     private static final long serialVersionUID = 1L;
     
     /**
@@ -26,6 +26,8 @@ public class RequestServlet extends HttpServlet {
      */
     protected void doGet(HttpServletRequest request,
             HttpServletResponse response) throws ServletException, IOException {
+    	
+    	super.doGet(request, response);
     	
     	request.setAttribute("mode", "input");
     	
