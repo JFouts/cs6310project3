@@ -18,7 +18,7 @@ import arms.db.Course;
 import arms.db.Student;
 import arms.db.StudentRequest;
 
-public class RequestServlet extends HttpServlet {
+public class RequestServlet extends ARMSServlet {
     private static final long serialVersionUID = 1L;
     
     /**
@@ -54,6 +54,10 @@ public class RequestServlet extends HttpServlet {
         	courses.put(c.getId(), c.getName());
 		request.setAttribute("courses", courses);
     	
+		if (shadowId!=null && !shadowId.isEmpty()) {
+			super.doGet(request, response);
+		}
+		
 		request.getRequestDispatcher("WEB-INF/Request.jsp").forward(request, response);
     }
     
@@ -116,9 +120,14 @@ public class RequestServlet extends HttpServlet {
     		} catch (Exception e) {
 				throw new ServletException(e);
     		}
-    		request.setAttribute("schedule", schedule);
     	}
     	
-		request.getRequestDispatcher("WEB-INF/Request.jsp").forward(request, response);
+    	request.setAttribute("schedule", schedule);
+    	
+    	if (shadowId != null && !shadowId.isEmpty()) {
+    		request.getRequestDispatcher("WEB-INF/Request.jsp?userId=" + userId+"&?shadowId="+shadowId).forward(request, response);
+    	} else {
+    		request.getRequestDispatcher("WEB-INF/Request.jsp").forward(request, response);
+    	}
     }
 }
