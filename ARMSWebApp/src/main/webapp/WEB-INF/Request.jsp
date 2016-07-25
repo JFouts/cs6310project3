@@ -53,7 +53,14 @@
 			</c:when>
 		</c:choose>
 	    <div class="text-center">
-	      <a class="btn btn-default" href="StudentDashboard?userId=${userId}" role="button">Cancel / Back to Dashboard</a>
+	    	<c:choose>
+	    		<c:when test="${isAdmin}">
+	      			<a class="btn btn-default" href="AdminDashboard?userId=${userId}" role="button">Cancel / Back to Dashboard</a>
+	    		</c:when>
+	    		<c:otherwise>
+	    			<a class="btn btn-default" href="StudentDashboard?userId=${userId}" role="button">Cancel / Back to Dashboard</a>
+	    		</c:otherwise>
+	    	</c:choose>
 	    </div>
 	  </div>
     </div>
