@@ -51,6 +51,7 @@ public class CourseServlet extends ARMSServlet {
     	
     	try {
 			course = api.getCourse(courseId);
+			course.setDemand(api.getCourseDemand(courseId));
 		} catch (Exception e) {
 			throw new ServletException(e);
 		}
@@ -89,7 +90,7 @@ public class CourseServlet extends ARMSServlet {
 		} catch (Exception e) {
 			throw new ServletException(e);
 		}
-    	
+		
     	request.setAttribute("course", course);
     	request.setAttribute("availableSemesters", availableSemesters);
     	request.setAttribute("coursePrereqs", coursePrereqs);
