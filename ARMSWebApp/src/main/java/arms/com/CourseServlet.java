@@ -44,10 +44,7 @@ public class CourseServlet extends ARMSServlet {
 			courseList = api.getCatalog();
 			request.setAttribute("courseList", courseList);
 		} catch (Exception e) {
-			request.setAttribute("error", e.toString());
-			e.printStackTrace();
-			request.getRequestDispatcher("WEB-INF/Error.jsp").forward(request, response);
-			return;
+			throw new ServletException(e);
 		} 
     	
     	Course course = null;
@@ -55,10 +52,7 @@ public class CourseServlet extends ARMSServlet {
     	try {
 			course = api.getCourse(courseId);
 		} catch (Exception e) {
-			request.setAttribute("error", e.toString());
-			e.printStackTrace();
-			request.getRequestDispatcher("WEB-INF/Error.jsp").forward(request, response);
-			return;
+			throw new ServletException(e);
 		}
     	
     	Semester[] availableSemesters = null;
@@ -80,10 +74,7 @@ public class CourseServlet extends ARMSServlet {
     			try {
 					coursePrereqs[i] = api.getCourse(prereqs.get(i));
 				} catch (Exception e) {
-					request.setAttribute("error", e.toString());
-					e.printStackTrace();
-					request.getRequestDispatcher("WEB-INF/Error.jsp").forward(request, response);
-					return;
+					throw new ServletException(e);
 				}
     		}
     	}
@@ -92,10 +83,18 @@ public class CourseServlet extends ARMSServlet {
     	for(int i=0;i<3;i++)
     		allSemesters[i] = new Semester(i);    	
     	
+    	int defaultMaxSize;
+		try {
+			defaultMaxSize = api.getMaxStudentsPerCourse();
+		} catch (Exception e) {
+			throw new ServletException(e);
+		}
+    	
     	request.setAttribute("course", course);
     	request.setAttribute("availableSemesters", availableSemesters);
     	request.setAttribute("coursePrereqs", coursePrereqs);
     	request.setAttribute("allSemesters", allSemesters);
+    	request.setAttribute("defaultMaxSize", defaultMaxSize);
     	
 		request.getRequestDispatcher("WEB-INF/Course.jsp").forward(request, response);
     }
