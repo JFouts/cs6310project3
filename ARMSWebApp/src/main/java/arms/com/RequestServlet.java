@@ -70,6 +70,8 @@ public class RequestServlet extends ARMSServlet {
     protected void doPost(HttpServletRequest request,
     		HttpServletResponse response) throws ServletException, IOException {
     	
+    	super.doGet(request, response);
+    	
     	request.setAttribute("mode", "output");
     	
     	int userId = Integer.parseInt(request.getParameter("userId"));
